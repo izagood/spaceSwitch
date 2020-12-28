@@ -68,7 +68,7 @@ $(document).ready(function () {
             // 비어있으면
             if (randomList[randomNum] == undefined) {
                 randomList[randomNum] = list[i];
-            } else { // 비어있지 않으면 남은 숫자 중에 임으로 들어간다.
+            } else { // 비어있지 않으면 남은 숫자 중에 임의로 들어간다.
                 const emptyRandomList = emptyList(randomList);
                 const pickOne = randomIntMax(emptyRandomList.length);
                 
