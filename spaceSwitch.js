@@ -12,7 +12,7 @@ $(document).ready(function () {
 
     const renderList = function (renderlist) {
         for (const renderlistNum in renderlist) {
-            $('li').eq(renderlistNum).text(list[renderlistNum]);
+            $('li').eq(renderlistNum).text(renderlist[renderlistNum]);
         }
     }
 
