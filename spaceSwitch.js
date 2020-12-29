@@ -51,9 +51,10 @@ $(document).ready(function () {
 
     //  비어있는 list 뽑기
     const emptyList = function (targetList) {
+        const listLength = targetList.length;
         let returnemptyList = [];
         let countNum = 0;
-        for(const i in targetList){
+        for(let i =0;i<listLength ; i++){
             if(targetList[i] == undefined){
                 returnemptyList[countNum] = i;
                 countNum++;
@@ -74,10 +75,14 @@ $(document).ready(function () {
                 console.log(randomList);
                 const emptyRandomList = emptyList(randomList);
                 console.log(emptyRandomList);
-                const pickOne = randomIntMax(emptyRandomList.length);
-                console.log(pickOne);
+                if(Array.isArray(emptyRandomList) && emptyRandomList.length === 0){
+                    randomList[randomList.length] = list[i];
+                }else{
+                    const pickOne = randomIntMax(emptyRandomList.length);
+                    console.log(pickOne);
+                    randomList[emptyRandomList[pickOne]] = list[i];
+                }
                 
-                randomList[emptyRandomList[pickOne]] = list[i];
             }
         }
         console.log(randomList);
