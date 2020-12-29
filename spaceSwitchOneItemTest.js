@@ -9,7 +9,8 @@ $(document).ready(function () {
     //자리를 jsonObj에 생성
     const listFill = function(listFillParam){
         for(var i=0; i<listFillParam.length; i++){
-            jsonObj
+            // 12개 0들어간 리스트 생성
+            jsonObj.listFillParam[i] = [0,0,0,0,0,0,0,0,0,0,0,0]
         }
     }
 
