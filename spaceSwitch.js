@@ -49,6 +49,7 @@ $(document).ready(function () {
         }
     }
 
+    //  비어있는 list 뽑기
     const emptyList = function (targetList) {
         let returnemptyList = [];
         let countNum = 0;
@@ -67,10 +68,14 @@ $(document).ready(function () {
 
             // 비어있으면
             if (randomList[randomNum] == undefined) {
+                console.log(randomList[randomNum], list[i]);
                 randomList[randomNum] = list[i];
             } else { // 비어있지 않으면 남은 숫자 중에 임의로 들어간다.
+                console.log(randomList);
                 const emptyRandomList = emptyList(randomList);
+                console.log(emptyRandomList);
                 const pickOne = randomIntMax(emptyRandomList.length);
+                console.log(pickOne);
                 
                 randomList[emptyRandomList[pickOne]] = list[i];
             }
