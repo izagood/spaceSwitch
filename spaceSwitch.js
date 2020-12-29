@@ -25,7 +25,7 @@ $(document).ready(function () {
 
     const randomIntMax = function (max) {
         return Math.floor(Math.random() * Math.floor(max));
-      }
+    }
 
     // 1분단 -> 2,3 분단 / 2분단 -> 1,3분단 / 3분단 -> 1,2분단
     const rangeRandom = function (i) {
@@ -54,13 +54,22 @@ $(document).ready(function () {
         const listLength = targetList.length;
         let returnemptyList = [];
         let countNum = 0;
-        for(let i =0;i<listLength ; i++){
-            if(targetList[i] == undefined){
+        for (let i = 0; i < listLength; i++) {
+            if (targetList[i] == undefined) {
                 returnemptyList[countNum] = i;
                 countNum++;
             }
         }
         return returnemptyList
+    };
+
+    const stackItem = function (stackItemTarget) {
+        // stackItemTarget에 해당 순번이 배열에 들어간다.
+
+    };
+
+    const firstPick = function() {
+        
     };
 
     const shuffleList = function () {
@@ -75,14 +84,14 @@ $(document).ready(function () {
                 console.log(randomList);
                 const emptyRandomList = emptyList(randomList);
                 console.log(emptyRandomList);
-                if(Array.isArray(emptyRandomList) && emptyRandomList.length === 0){
+                if (Array.isArray(emptyRandomList) && emptyRandomList.length === 0) {
                     randomList[randomList.length] = list[i];
-                }else{
+                } else {
                     const pickOne = randomIntMax(emptyRandomList.length);
                     console.log(pickOne);
                     randomList[emptyRandomList[pickOne]] = list[i];
                 }
-                
+
             }
         }
         console.log(randomList);
