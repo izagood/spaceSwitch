@@ -103,38 +103,43 @@ $(document).ready(function () {
 
     params들을 받아서 해당 위치를 false로 변경해 줌.
     */
-    const itemHistory = function (itemHistoryObj ,itemHistoryKey, itemHistoryGroupValue, itemHistoryPlaceValue) {
+    const itemHistory = function (itemHistoryObj, itemHistoryKey, itemHistoryGroupValue, itemHistoryPlaceValue) {
         itemHistoryObj[itemHistoryKey][itemHistoryGroupValue][itemHistoryPlaceValue] = false;
     }
 
-    // render를 하고 itemHistory함수를 사용하여 render한 곳을 기록
-    const renderList = function (renderListParam, historyObject) {
-        const P1 = '.p1';
-        const P2 = '.p2';
-        const P3 = '.p3';
-        const LI = 'li';
+    /* 
+        조건을 맞춘 랜덤 구현
+    */
+    const shuffle = function () {
+        let shuffleList = [];
+
+        return shuffleList;
+    };
+
+    // render만
+    const renderList = function (renderListParam) {
         for (var i in renderListParam) {
             // $('.p1').find('li').eq(1)
             $('li').eq(i).text(renderListParam[i]);
-            itemHistory(historyObject, renderListParam[i], i);
         }
     }
 
-    const setList = function (setListParam, object) {
-        renderList(setListParam, object);
-    };
-
-    const shuffleList = function () {
-
-    };
-
+    /* 
+        초기화를 하고 처음 섞어서 기록 후
+        
+        render
+    */
     $("#setSeat").on("click", function () {
         let object = groupCreate(list, 3);
         console.log(object);
-        setList(list, object);
+        renderList(list);
     });
-
+    /* 
+        섞어서 기록 후 
+        
+        render
+    */
     $("#randomSeat").on("click", function () {
-        shuffleList();
+        renderList(list);
     });
 });
