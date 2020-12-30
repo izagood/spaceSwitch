@@ -14,7 +14,7 @@
 $(document).ready(function () {
 
     const list = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍', '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
-    const hi = 'one연결 성공';
+    const hi = '연결 성공';
     console.log(hi);
 
     const arrayCreate = function (membersList, groups) {
@@ -93,25 +93,26 @@ $(document).ready(function () {
         const array = arrayCreate(membersList, groups);
         // key : value 형태로 객체 생성
         for (var lp1 = 0; lp1 < membersList.length; lp1++) {
-            jsonObj[membersList[j]] = array;
+            jsonObj[membersList[lp1]] = array;
         }
+        return jsonObj;
     };
 
-    // 자리 히스토리
-    const itemHistory = function (itemHistoryKey, itemHistoryValue) {
-        jsonObj.itemHistoryKey.push(itemHistoryValue);
+    //자리 히스토리
+    const itemHistory = function (itemHistoryObj ,itemHistoryKey, itemHistoryValue) {
+        itemHistoryObj.itemHistoryKey.push(itemHistoryValue);
     }
 
     // render
     const renderList = function (renderListParam) {
         for (var i in renderListParam) {
             $('li').eq(i).text(renderListParam[i]);
-            itemHistory(renderListParam[i], i);
+            // itemHistory(renderListParam[i], i);
         }
     }
 
     const setList = function () {
-        renderList(testList);
+        renderList(list);
     };
 
     const shuffleList = function () {
@@ -121,7 +122,8 @@ $(document).ready(function () {
 
 
     $("#setSeat").on("click", function () {
-        groupCreate(list, 3);
+        let object = groupCreate(list, 3);
+        console.log(object);
         setList();
     });
 
