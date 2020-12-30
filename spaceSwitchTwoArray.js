@@ -95,6 +95,18 @@ $(document).ready(function () {
         return jsonObj;
     };
 
+    const changeListForm = function(changeListFormParam, changeListFormgroups){
+        let changeForm = arrayCreate(changeListFormParam, changeListFormgroups);
+        var count1 = 0;
+        for(var lp1=0; lp1<changeForm.length; lp1++){
+            for(var lp2=0; lp2<changeForm[lp1].length; lp2++){
+                changeForm[lp1][lp2] = changeListFormParam[count1];
+                count1++
+            }
+        }
+        return changeForm;
+    };
+
     /* 자리 히스토리
     @param itemHistoryObj 기록이 저장될 object
     @param itemHistoryKey 맴버 이름
@@ -131,7 +143,8 @@ $(document).ready(function () {
     */
     $("#setSeat").on("click", function () {
         let object = groupCreate(list, 3);
-        console.log(object);
+        let formattingList = changeListForm(list, 3);
+        console.log(formattingList);
         renderList(list);
     });
     /* 
