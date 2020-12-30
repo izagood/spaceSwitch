@@ -90,10 +90,10 @@ $(document).ready(function () {
         json 객체로 만들어 지는데 jsonObj에 key = 사람, value = 배열
         
     */
-    const groupCreate = function (membersList) {
+    const groupCreate = function (membersList, groups) {
         // 객체 초기화
         jsonObj = {};
-        const array = arrayCreate(membersList);
+        const array = arrayCreate(membersList, groups);
         // key : value 형태로 객체 생성
         for (var j = 0; j < membersList.length; j++) {
             jsonObj[membersList[j]] = array;
