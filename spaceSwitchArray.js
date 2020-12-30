@@ -95,7 +95,14 @@ $(document).ready(function () {
         return jsonObj;
     };
 
-    //자리 히스토리
+    /* 자리 히스토리
+    @param itemHistoryObj 기록이 저장될 object
+    @param itemHistoryKey 맴버 이름
+    @param itemHistoryGroupValue 배열의 그룹 값
+    @param itemHistoryPlaceValue 그룹에서의 위치 값
+
+    params들을 받아서 해당 위치를 false로 변경해 줌.
+    */
     const itemHistory = function (itemHistoryObj ,itemHistoryKey, itemHistoryGroupValue, itemHistoryPlaceValue) {
         itemHistoryObj[itemHistoryKey][itemHistoryGroupValue][itemHistoryPlaceValue] = false;
     }
