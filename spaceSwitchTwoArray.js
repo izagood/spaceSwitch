@@ -94,7 +94,8 @@ $(document).ready(function () {
         }
         return jsonObj;
     };
-
+    
+    // 기존 리스트를 그룹별 형식에 맞는 2차 배열로 변환한다.
     const changeListForm = function(changeListFormParam, changeListFormgroups){
         let changeForm = arrayCreate(changeListFormParam, changeListFormgroups);
         var count1 = 0;
