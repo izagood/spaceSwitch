@@ -1,18 +1,42 @@
 /* 
 
 2차원 배열에 true로 할당하고
+ex) 3개 그룹 3명씩
+var array = 
+[
+    [true,true,true]
+    [true,true,true]
+    [true,true,true]
+]
 현재 1차 배열 위치 할당하고
+ex) array[0]
+해당 배열의 2차 배열에 자리 false로 변경
+ex) 만약 3번째 자리라면
+array[0][2] = false;
+다음에 그룹을 정할 때
 현재 1차 배열 위치를 제외한 다른 곳에 다음에 할당해야 함.
+ex ) 이전에 array[0] 이였으므로
+array[1] or array[2] 의 2차 배열에 할당
 랜덤으로 뽑힌 그룹의 배열이 모두 false이면 다른 그룹에 할당
+ex ) array[1]이 뽑혔는데
+array[1][0] == false
+array[1][1] == false
+array[1][2] == false
+이면
+array[2] 의 각 2차배열에 true가 있는지 체크하고
+그래도 모두 false라면
+현재 배열 array[0]중에 true인 곳에 할당
 
 일반적으로 사용할 수 있는 기능으로 만들자.
 */
 
 $(document).ready(function () {
-
-    const list = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍', '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
+    // 연결 log 
     const hi = '연결 성공';
     console.log(hi);
+
+    const list = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍', 
+    '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
 
     const arrayCreate = function (membersList, groups) {
         // value에 넣어줄 배열 생성
