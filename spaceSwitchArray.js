@@ -1,12 +1,9 @@
 /* 
 
-2차원 배열에 false로 할당하고
-각 그룹에 flag를 true로 줌
-그리고 할당한 그룹에 flag를 false로 줘서
-그 자리에 앉았으면 다음 앉을때
-해당 그룹의 flag가 false라 들어갈 수 없고
-2개 중에 랜덤으로 true인 그룹에 들어가는데
-랜덤으로 뽑힌 그룹의 배열이 모두 true이면 다른 그룹에 할당
+2차원 배열에 true로 할당하고
+현재 1차 배열 위치 할당하고
+현재 1차 배열 위치를 제외한 다른 곳에 다음에 할당해야 함.
+랜덤으로 뽑힌 그룹의 배열이 모두 false이면 다른 그룹에 할당
 
 일반적으로 사용할 수 있는 기능으로 만들자.
 */
@@ -84,7 +81,7 @@ $(document).ready(function () {
         
         만약에 수가 맞지 않으면 순차적으로 적게 들어간다.
         
-        json 객체로 만들어 지는데 jsonObj에 key = 사람, value = 배열
+        json 객체로 만들어 지는데 jsonObj에 key = 사람, value = 2차원 배열
         
     */
     const groupCreate = function (membersList, groups) {
@@ -99,32 +96,35 @@ $(document).ready(function () {
     };
 
     //자리 히스토리
-    const itemHistory = function (itemHistoryObj ,itemHistoryKey, itemHistoryValue) {
-        itemHistoryObj.itemHistoryKey.push(itemHistoryValue);
+    const itemHistory = function (itemHistoryObj ,itemHistoryKey, itemHistoryGroupValue, itemHistoryPlaceValue) {
+        itemHistoryObj[itemHistoryKey][itemHistoryGroupValue][itemHistoryPlaceValue] = false;
     }
 
-    // render
-    const renderList = function (renderListParam) {
+    // render를 하고 itemHistory함수를 사용하여 render한 곳을 기록
+    const renderList = function (renderListParam, historyObject) {
+        const P1 = '.p1';
+        const P2 = '.p2';
+        const P3 = '.p3';
+        const LI = 'li';
         for (var i in renderListParam) {
+            // $('.p1').find('li').eq(1)
             $('li').eq(i).text(renderListParam[i]);
-            // itemHistory(renderListParam[i], i);
+            itemHistory(historyObject, renderListParam[i], i);
         }
     }
 
-    const setList = function () {
-        renderList(list);
+    const setList = function (setListParam, object) {
+        renderList(setListParam, object);
     };
 
     const shuffleList = function () {
 
     };
 
-
-
     $("#setSeat").on("click", function () {
         let object = groupCreate(list, 3);
         console.log(object);
-        setList();
+        setList(list, object);
     });
 
     $("#randomSeat").on("click", function () {
