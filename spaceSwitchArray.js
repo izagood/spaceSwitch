@@ -17,19 +17,19 @@ $(document).ready(function () {
     const hi = 'one연결 성공';
     console.log(hi);
 
-    let jsonObj = {};
-
     const arrayCreate = function (membersList, groups) {
         // value에 넣어줄 배열 생성
-        var outArr = [];
-        var inArr = [];
+        let outArr = [];
+        let inArr = [];
         const membersListLength = membersList.length;
         let maxGroupMembers;
         let minGroupMembers;
         const remainderGroupMembers = membersListLength % groups;
+
         if (membersListLength < groups) {
             var count1 = 0;
-            for (var a = 0; a < groups; a++) {
+
+            for (var lp1 = 0; lp1 < groups; lp1++) {
                 if (count1 < membersListLength) {
                     inArr.push(true);
                     count1++;
@@ -40,35 +40,33 @@ $(document).ready(function () {
                 inArr = []
             }
         } else {
-
             // 0으로 떨어지면 maxGroupMembers 만큼 돌면서 push해주면 됨
             if (membersListLength % groups == 0) {
                 maxGroupMembers = Math.floor(membersListLength / groups);
 
-                for (var i = 0; i < groups; i++) {
+                for (var lp2 = 0; lp2 < groups; lp2++) {
 
-                    for (var j = 0; j < maxGroupMembers; j++) {
+                    for (var lp3 = 0; lp3 < maxGroupMembers; lp3++) {
                         inArr.push(true);
                     }
                     outArr.push(inArr);
                     inArr = []
                 }
-            }else {
+            } else {
                 // 0으로 떨어지지 않으면 maxGroupMembers + 1 만큼 돌면서 push 하고
                 // remainderGroupMembers 만큼 -1하여 push한다.
-                
                 maxGroupMembers = Math.floor(membersListLength / groups) + 1;
                 minGroupMembers = Math.floor(membersListLength / groups);
-                let count = 0;
+                var count2 = 0;
 
-                for (var k = 0; k < groups; k++) {
-                    if (count < remainderGroupMembers) {
-                        for (var l = 0; l < maxGroupMembers; l++) {
+                for (var lp4 = 0; lp4 < groups; lp4++) {
+                    if (count2 < remainderGroupMembers) {
+                        for (var lp5 = 0; lp5 < maxGroupMembers; lp5++) {
                             inArr.push(true);
                         }
-                        count++;
+                        count2++;
                     } else {
-                        for (var m = 0; m < minGroupMembers; m++) {
+                        for (var lp6 = 0; lp6 < minGroupMembers; lp6++) {
                             inArr.push(true);
                         }
                     }
@@ -76,7 +74,6 @@ $(document).ready(function () {
                     inArr = []
                 }
             }
-
         }
         return outArr;
     };
@@ -92,10 +89,10 @@ $(document).ready(function () {
     */
     const groupCreate = function (membersList, groups) {
         // 객체 초기화
-        jsonObj = {};
+        let jsonObj = {};
         const array = arrayCreate(membersList, groups);
         // key : value 형태로 객체 생성
-        for (var j = 0; j < membersList.length; j++) {
+        for (var lp1 = 0; lp1 < membersList.length; lp1++) {
             jsonObj[membersList[j]] = array;
         }
     };
