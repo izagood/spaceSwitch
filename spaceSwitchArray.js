@@ -43,7 +43,7 @@ $(document).ready(function () {
 
             // 0으로 떨어지면 maxGroupMembers 만큼 돌면서 push해주면 됨
             if (membersListLength % groups == 0) {
-                maxGroupMembers = membersListLength / groups;
+                maxGroupMembers = Math.floor(membersListLength / groups);
 
                 for (var i = 0; i < groups; i++) {
 
@@ -53,12 +53,12 @@ $(document).ready(function () {
                     outArr.push(inArr);
                     inArr = []
                 }
-            }
-            // 0으로 떨어지지 않으면 maxGroupMembers + 1 만큼 돌면서 push 하고
-            // remainderGroupMembers 만큼 -1하여 push한다. 
-            else {
-                maxGroupMembers = (membersListLength / groups) + 1;
-                minGroupMembers = membersListLength / groups;
+            }else {
+                // 0으로 떨어지지 않으면 maxGroupMembers + 1 만큼 돌면서 push 하고
+                // remainderGroupMembers 만큼 -1하여 push한다.
+                
+                maxGroupMembers = Math.floor(membersListLength / groups) + 1;
+                minGroupMembers = Math.floor(membersListLength / groups);
                 let count = 0;
 
                 for (var k = 0; k < groups; k++) {
