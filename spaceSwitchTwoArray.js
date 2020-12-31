@@ -26,8 +26,6 @@ array[1][2] == false
 array[2] 의 각 2차배열에 true가 있는지 체크하고
 그래도 모두 false라면
 현재 배열 array[0]중에 true인 곳에 할당
-
-일반적으로 사용할 수 있는 기능으로 만들자.
 */
 
 $(document).ready(function () {
@@ -38,7 +36,7 @@ $(document).ready(function () {
     const list = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍', 
     '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
 
-    const arrayCreate = function (membersList, groups) {
+    const templateCreate = function (membersList, groups) {
         // value에 넣어줄 배열 생성
         let outArr = [];
         let inArr = [];
@@ -111,7 +109,7 @@ $(document).ready(function () {
     const groupCreate = function (membersList, groups) {
         // 객체 초기화
         let jsonObj = {};
-        const array = arrayCreate(membersList, groups);
+        const array = templateCreate(membersList, groups);
         // key : value 형태로 객체 생성
         for (var lp1 = 0; lp1 < membersList.length; lp1++) {
             jsonObj[membersList[lp1]] = array;
@@ -120,16 +118,21 @@ $(document).ready(function () {
     };
     
     // 기존 리스트를 그룹별 형식에 맞는 2차 배열로 변환한다.
-    const changeListForm = function(changeListFormParam, changeListFormgroups){
-        let changeForm = arrayCreate(changeListFormParam, changeListFormgroups);
+    const changeListToForm = function(ListParam, changeListToFormGroups){
+        let templateList = templateCreate(ListParam, changeListToFormGroups);
         var count1 = 0;
-        for(var lp1=0; lp1<changeForm.length; lp1++){
-            for(var lp2=0; lp2<changeForm[lp1].length; lp2++){
-                changeForm[lp1][lp2] = changeListFormParam[count1];
+        for(var lp1=0; lp1<templateList.length; lp1++){
+            for(var lp2=0; lp2<templateList[lp1].length; lp2++){
+                templateList[lp1][lp2] = ListParam[count1];
                 count1++
             }
         }
-        return changeForm;
+        return templateList;
+    };
+
+    const changeFormToList = function(){
+
+        retrun 
     };
 
     /* 자리 히스토리
@@ -153,11 +156,13 @@ $(document).ready(function () {
         return shuffleList;
     };
 
-    // render만
-    const renderList = function (renderListParam) {
-        for (var i in renderListParam) {
-            // $('.p1').find('li').eq(1)
-            $('li').eq(i).text(renderListParam[i]);
+    
+    /* 
+        render
+    */
+    const renderList = function (renderListFormattingParam) {
+        for (var i in renderListFormattingParam) {
+            $('li').eq(i).text(renderListFormattingParam[i]);
         }
     }
 
@@ -168,8 +173,6 @@ $(document).ready(function () {
     */
     $("#setSeat").on("click", function () {
         let object = groupCreate(list, 3);
-        let formattingList = changeListForm(list, 3);
-        console.log(formattingList);
         renderList(list);
     });
     /* 
