@@ -158,6 +158,7 @@ $(document).ready(function () {
 
     
     /* 
+        그냥 list 형태로 들어옴
         render
     */
     const renderList = function (renderListFormattingParam) {
@@ -167,18 +168,18 @@ $(document).ready(function () {
     }
 
     /* 
-        초기화를 하고 처음 섞어서 기록 후
+        초기화를 하고 처음 섞어서(shuffle) 기록(itemHistory) 후
         
-        render
+        renderList
     */
     $("#setSeat").on("click", function () {
         let object = groupCreate(list, 3);
         renderList(list);
     });
     /* 
-        섞어서 기록 후 
+        섞어서(shuffle) 기록(itemHistory) 후 
         
-        render
+        renderList
     */
     $("#randomSeat").on("click", function () {
         renderList(list);
