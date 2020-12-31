@@ -130,6 +130,7 @@ $(document).ready(function () {
         return templateList;
     };
 
+    // renderList하기 전에 templateForm으로 들어가 있는걸 일반 list로 쭉 배열
     const changeFormToList = function(){
 
         retrun 
