@@ -36,7 +36,7 @@ $(document).ready(function () {
     const originlist = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍',
         '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
     let nowList = [];
-    let object = {};
+    let HistoryObject = {};
 
     /* 
         @param membersList 맴버 수
@@ -124,6 +124,16 @@ $(document).ready(function () {
         }
         return jsonObj;
     };
+    /* 
+        @param initList 초기 list
+        @param initGroups 초기 그룹 수
+
+        초기 세팅이 되는 부분
+    */
+    const createInit = function(initList, initGroups) { 
+        HistoryObject = groupObjCreate(initList, initGroups);
+        nowList = initList;
+    };
 
     /* 
         @param ListParam list형태의 변수
@@ -200,6 +210,8 @@ $(document).ready(function () {
     }
     
     /* 
+        @param shuffleListParam list형태 
+
         조건을 맞춘 랜덤 구현
         랜덤으로 자리를 배치함
         1. 앉지 않았던 분단을 우선으로 배치함  
@@ -210,10 +222,10 @@ $(document).ready(function () {
 
         근데 이게 shuffle을 돌릴 때 히스토리를 조사해서 돌린 최종 list가 나와야함.
     */
-    const shuffle = function () {
+    const shuffle = function (shuffleListParam) {
         itemHistory();
         let shuffleList = [];
-        
+
         nowList = shuffleList;
         return shuffleList;
     };
@@ -236,7 +248,7 @@ $(document).ready(function () {
         renderList
     */
     $("#setSeat").on("click", function () {
-        object = groupObjCreate(originlist, 3);
+        createInit(originlist, 3);
         var nowRenderList = shuffle(nowList);
         renderList(nowRenderList);
     });
