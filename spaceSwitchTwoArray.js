@@ -36,7 +36,7 @@ $(document).ready(function () {
     const originlist = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍',
         '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
     let nowList = [];
-    let HistoryObject = {};
+    let historyObject = {};
 
     /* 
         @param membersList 맴버 수
@@ -130,8 +130,8 @@ $(document).ready(function () {
 
         초기 세팅이 되는 부분
     */
-    const createInit = function(initList, initGroups) { 
-        HistoryObject = groupObjCreate(initList, initGroups);
+    const createInit = function (initList, initGroups) {
+        historyObject = groupObjCreate(initList, initGroups);
         nowList = initList;
     };
 
@@ -166,7 +166,7 @@ $(document).ready(function () {
 
         return forRenderList;
     };
-    
+
     // ------------------------히스토리 관련 함수-------------------------------
     /* 
         자리 히스토리
@@ -183,10 +183,28 @@ $(document).ready(function () {
     }
 
     /* 
+        @param checkObj 체크해야할 obj
+        @param checkList for문 돌리기 위한 list
+    
         모든 히스토리가 false인지 체크하고 모두 false라면 모두 true로 변경해준다.
     */
-    const allHistoryFalseCheck = function () {
+    const allHistoryFalseCheck = function (checkObj, checkList, groups) {
+        let trueFlag = false;
 
+        for (var lp1 = 0; lp1 < checkList.length; lp1++) {
+            for (var lp2 = 0; lp2 < checkObj[checkList[lp1]].length; lp2++) {
+                for (var lp3 = 0; lp3 < checkObj[checkList[lp1]][lp2].length; lp3++) {
+                    if (checkObj[checkList[lp1]][lp2][lp3] == true) {
+                        trueFlag = true;
+                    }
+                }
+            }
+        }
+        
+        // historyObj 초기화
+        if(trueFlag == true){
+            historyObject = groupObjCreate(checkList, groups);
+        }
     };
     // ------------------------히스토리 관련 함수-------------------------------
 
@@ -208,12 +226,13 @@ $(document).ready(function () {
     const randomIntMax = function (max) {
         return Math.floor(Math.random() * Math.floor(max));
     }
-    
+
     /* 
         @param shuffleListParam list형태 
+        @param shuffleGroupParam 그룹 수 
 
         조건을 맞춘 랜덤 구현
-        랜덤으로 자리를 배치함
+        1. 랜덤으로 자리를 배치함
         1. 앉지 않았던 분단을 우선으로 배치함  
         ex) 최초 자리배치 후 A가 1분단 1열에 배치되었다면 그다음 자리배치할때는 2,3분단이 우선이 되도록 랜덤 자리 배치  
         
@@ -222,7 +241,11 @@ $(document).ready(function () {
 
         근데 이게 shuffle을 돌릴 때 히스토리를 조사해서 돌린 최종 list가 나와야함.
     */
-    const shuffle = function (shuffleListParam) {
+    const shuffle = function (shuffleListParam, shuffleGroupParam) {
+        // shuffle에서 할당 유무를 판단하는 template
+        let shuffleForm = templateCreate(shuffleListParam, shuffleGroupParam);
+
+        // shuffle을 마치고 현재 할당된 상태를 historyObj에 반영
         itemHistory();
         let shuffleList = [];
 
@@ -249,7 +272,7 @@ $(document).ready(function () {
     */
     $("#setSeat").on("click", function () {
         createInit(originlist, 3);
-        var nowRenderList = shuffle(nowList);
+        var nowRenderList = shuffle(nowList, 3);
         renderList(nowRenderList);
     });
     /* 
@@ -257,8 +280,8 @@ $(document).ready(function () {
     
     renderList
     */
-   $("#randomSeat").on("click", function () {
-       var nowRenderList = shuffle(nowList);
-       renderList(nowRenderList);
+    $("#randomSeat").on("click", function () {
+        var nowRenderList = shuffle(nowList);
+        renderList(nowRenderList);
     });
 });
