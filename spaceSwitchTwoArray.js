@@ -36,6 +36,12 @@ $(document).ready(function () {
     const list = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍',
         '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
 
+    /* 
+        @param membersList 맴버 수
+        @param groups 그룹 수
+
+        맴버 수와 그룹 수에 맞게 2차 배열을 반환해준다.
+    */
     const templateCreate = function (membersList, groups) {
         // value에 넣어줄 배열 생성
         let outArr = [];
@@ -117,7 +123,12 @@ $(document).ready(function () {
         return jsonObj;
     };
 
-    // 기존 리스트를 그룹별 형식에 맞는 2차 배열로 변환한다.
+    /* 
+        @param ListParam list형태의 변수
+        @param changeListToFormGroups 그룹 수
+
+        기존 list를 그룹 형식에 맞는 2차 배열로 변환한다.
+    */
     const changeListToForm = function (ListParam, changeListToFormGroups) {
         let templateList = templateCreate(ListParam, changeListToFormGroups);
         var count1 = 0;
@@ -135,33 +146,65 @@ $(document).ready(function () {
 
         retrun
     };
+    
+    // ------------------------히스토리 관련 함수-------------------------------
+    /* 
+        자리 히스토리
+        @param itemHistoryObj 기록이 저장될 object
+        @param itemHistoryKey 맴버 이름
+        @param itemHistoryGroupValue 배열의 그룹 값
+        @param itemHistoryPlaceValue 그룹에서의 위치 값
 
-    /* 자리 히스토리
-    @param itemHistoryObj 기록이 저장될 object
-    @param itemHistoryKey 맴버 이름
-    @param itemHistoryGroupValue 배열의 그룹 값
-    @param itemHistoryPlaceValue 그룹에서의 위치 값
-
-    params들을 받아서 해당 위치를 false로 변경해 줌.
+        params들을 받아서 해당 위치를 false로 변경해 줌.
+        초기화 했던 Obj에 하나씩 false로 바꾸면서 히스토리를 만든다.
     */
     const itemHistory = function (itemHistoryObj, itemHistoryKey, itemHistoryGroupValue, itemHistoryPlaceValue) {
         itemHistoryObj[itemHistoryKey][itemHistoryGroupValue][itemHistoryPlaceValue] = false;
     }
 
     /* 
+        모든 히스토리가 false인지 체크하고 모두 false라면 모두 true로 변경해준다.
+    */
+    const allHistoryFalseCheck = function () {
+
+    };
+    // ------------------------히스토리 관련 함수-------------------------------
+
+    // ------------------------셔플 관련 함수-------------------------------
+    /*
+        @param min min 이상의 정수
+        @param max max 미만의 정수
+
+        만약 min = 0 , max = 3 이면 0,1,2가 나옴
+    */
+    const randomIntMinMax = function (min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+    /* 
+        @param max max 미만의 0이상의 정수
+    */
+    const randomIntMax = function (max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+    
+    /* 
         조건을 맞춘 랜덤 구현
-        랜덤으로 자리를 배치함  
+        랜덤으로 자리를 배치함
         1. 앉지 않았던 분단을 우선으로 배치함  
         ex) 최초 자리배치 후 A가 1분단 1열에 배치되었다면 그다음 자리배치할때는 2,3분단이 우선이 되도록 랜덤 자리 배치  
-
+        
         1. 앉았던 자리에는 배치가 안되도록  
         그러면 총 12번까지는 자리를 배치할수 있겠죠?  
     */
     const shuffle = function () {
+        itemHistory();
         let shuffleList = [];
 
         return shuffleList;
     };
+    // ------------------------셔플 관련 함수-------------------------------
 
 
     /* 
@@ -181,6 +224,7 @@ $(document).ready(function () {
     */
     $("#setSeat").on("click", function () {
         let object = groupObjCreate(list, 3);
+        shuffle();
         renderList(list);
     });
     /* 
