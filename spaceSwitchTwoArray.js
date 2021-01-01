@@ -33,8 +33,8 @@ $(document).ready(function () {
     const hi = '연결 성공';
     console.log(hi);
 
-    const list = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍', 
-    '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
+    const list = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍',
+        '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
 
     const templateCreate = function (membersList, groups) {
         // value에 넣어줄 배열 생성
@@ -106,7 +106,7 @@ $(document).ready(function () {
         json 객체로 만들어 지는데 jsonObj에 key = 사람, value = 2차원 배열
         
     */
-    const groupCreate = function (membersList, groups) {
+    const groupObjCreate = function (membersList, groups) {
         // 객체 초기화
         let jsonObj = {};
         const array = templateCreate(membersList, groups);
@@ -116,13 +116,13 @@ $(document).ready(function () {
         }
         return jsonObj;
     };
-    
+
     // 기존 리스트를 그룹별 형식에 맞는 2차 배열로 변환한다.
-    const changeListToForm = function(ListParam, changeListToFormGroups){
+    const changeListToForm = function (ListParam, changeListToFormGroups) {
         let templateList = templateCreate(ListParam, changeListToFormGroups);
         var count1 = 0;
-        for(var lp1=0; lp1<templateList.length; lp1++){
-            for(var lp2=0; lp2<templateList[lp1].length; lp2++){
+        for (var lp1 = 0; lp1 < templateList.length; lp1++) {
+            for (var lp2 = 0; lp2 < templateList[lp1].length; lp2++) {
                 templateList[lp1][lp2] = ListParam[count1];
                 count1++
             }
@@ -131,9 +131,9 @@ $(document).ready(function () {
     };
 
     // renderList하기 전에 templateForm으로 들어가 있는걸 일반 list로 쭉 배열
-    const changeFormToList = function(){
+    const changeFormToList = function () {
 
-        retrun 
+        retrun
     };
 
     /* 자리 히스토리
@@ -150,6 +150,12 @@ $(document).ready(function () {
 
     /* 
         조건을 맞춘 랜덤 구현
+        랜덤으로 자리를 배치함  
+        1. 앉지 않았던 분단을 우선으로 배치함  
+        ex) 최초 자리배치 후 A가 1분단 1열에 배치되었다면 그다음 자리배치할때는 2,3분단이 우선이 되도록 랜덤 자리 배치  
+
+        1. 앉았던 자리에는 배치가 안되도록  
+        그러면 총 12번까지는 자리를 배치할수 있겠죠?  
     */
     const shuffle = function () {
         let shuffleList = [];
@@ -157,7 +163,7 @@ $(document).ready(function () {
         return shuffleList;
     };
 
-    
+
     /* 
         그냥 list 형태로 들어옴
         render
@@ -174,7 +180,7 @@ $(document).ready(function () {
         renderList
     */
     $("#setSeat").on("click", function () {
-        let object = groupCreate(list, 3);
+        let object = groupObjCreate(list, 3);
         renderList(list);
     });
     /* 
