@@ -33,8 +33,10 @@ $(document).ready(function () {
     const hi = '연결 성공';
     console.log(hi);
 
-    const list = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍',
+    const originlist = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍',
         '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
+    let nowList = [];
+    let object = {};
 
     /* 
         @param membersList 맴버 수
@@ -128,6 +130,8 @@ $(document).ready(function () {
         @param changeListToFormGroups 그룹 수
 
         기존 list를 그룹 형식에 맞는 2차 배열로 변환한다.
+
+        히스토리에서 사용할 때 list를 groupObj 형식과 비교할 수 있게 사용한다.
     */
     const changeListToForm = function (ListParam, changeListToFormGroups) {
         let templateList = templateCreate(ListParam, changeListToFormGroups);
@@ -141,10 +145,16 @@ $(document).ready(function () {
         return templateList;
     };
 
-    // renderList하기 전에 templateForm으로 들어가 있는걸 일반 list로 쭉 배열
-    const changeFormToList = function () {
+    /*
+        @param formParam Form형식으로된 리스트
 
-        retrun
+        renderList하기 전에 templateForm으로 들어가 있는걸 일반 list로 쭉 배열
+    */
+    const changeFormToList = function (formParam) {
+        let forRenderList = [];
+
+
+        return forRenderList;
     };
     
     // ------------------------히스토리 관련 함수-------------------------------
@@ -196,12 +206,15 @@ $(document).ready(function () {
         ex) 최초 자리배치 후 A가 1분단 1열에 배치되었다면 그다음 자리배치할때는 2,3분단이 우선이 되도록 랜덤 자리 배치  
         
         1. 앉았던 자리에는 배치가 안되도록  
-        그러면 총 12번까지는 자리를 배치할수 있겠죠?  
+        그러면 총 12번까지는 자리를 배치할수 있겠죠?
+
+        근데 이게 shuffle을 돌릴 때 히스토리를 조사해서 돌린 최종 list가 나와야함.
     */
     const shuffle = function () {
         itemHistory();
         let shuffleList = [];
-
+        
+        nowList = shuffleList;
         return shuffleList;
     };
     // ------------------------셔플 관련 함수-------------------------------
@@ -223,16 +236,17 @@ $(document).ready(function () {
         renderList
     */
     $("#setSeat").on("click", function () {
-        let object = groupObjCreate(list, 3);
-        shuffle();
-        renderList(list);
+        object = groupObjCreate(originlist, 3);
+        var nowRenderList = shuffle(nowList);
+        renderList(nowRenderList);
     });
     /* 
-        섞어서(shuffle) 기록(itemHistory) 후 
-        
-        renderList
+    섞어서(shuffle) 기록(itemHistory) 후 
+    
+    renderList
     */
-    $("#randomSeat").on("click", function () {
-        renderList(list);
+   $("#randomSeat").on("click", function () {
+       var nowRenderList = shuffle(nowList);
+       renderList(nowRenderList);
     });
 });
