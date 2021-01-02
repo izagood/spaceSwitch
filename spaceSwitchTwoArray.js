@@ -124,16 +124,7 @@ $(document).ready(function () {
         }
         return jsonObj;
     };
-    /* 
-        @param initList 초기 list
-        @param initGroups 초기 그룹 수
 
-        초기 세팅이 되는 부분
-    */
-    const createInit = function (initList, initGroups) {
-        historyObject = groupObjCreate(initList, initGroups);
-        nowList = initList;
-    };
 
     /* 
         @param ListParam list형태의 변수
@@ -190,7 +181,7 @@ $(document).ready(function () {
     
         모든 히스토리가 checkBoolean으로 되어있는지 체크
     */
-    const allHistoryCheck = function (checkObj, checkList, groups, checkBoolean) {
+    const allHistoryCheck = function (checkObj, checkList, checkBoolean) {
         let allFlag = true;
 
         // boolean이 하나라도 있는지 체크해야 하므로 입력 값과 반대로 바꿔줘야 한다.
@@ -208,11 +199,6 @@ $(document).ready(function () {
                     }
                 }
             }
-        }
-
-        // historyObj 초기화
-        if (trueFlag == true) {
-            historyObject = groupObjCreate(checkList, groups);
         }
 
         return allFlag;
@@ -238,11 +224,11 @@ $(document).ready(function () {
         return Math.floor(Math.random() * Math.floor(max));
     }
 
-    const remainderIndex = function(indexList){
+    const remainderIndex = function (indexList) {
         let remainList = [];
         var count1 = 0;
-        for(var lp1=0; lp1<indexList.length; lp1++){
-            if(indexList[lp1] == true){
+        for (var lp1 = 0; lp1 < indexList.length; lp1++) {
+            if (indexList[lp1] == true) {
                 remainList[count1] = lp1;
                 count1++;
             }
@@ -251,28 +237,25 @@ $(document).ready(function () {
         return remainList;
     };
 
-    const noLimitRandomList = function(listParam){
+    const noLimitRandomList = function (listParam) {
         let noLimitRandom = [];
         let noLimitRandomIndex = [];
         let noLimitRandomIndexRemainder = [];
 
         // index할당
-        for(var lp1=0; lp1<listParam.length; lp1++){
+        for (var lp1 = 0; lp1 < listParam.length; lp1++) {
             noLimitRandomIndex.push(true);
         }
 
         // 순서대로 돌리면서 넣는데 들어가는 곳이 랜덤
-        for(var lp2=0; lp2<listParam.length; lp2++){
+        for (var lp2 = 0; lp2 < listParam.length; lp2++) {
             //남아있는 index 배열
             noLimitRandomIndexRemainder = remainderIndex(noLimitRandomIndex);
-            console.log(noLimitRandomIndexRemainder);
-            //남은 index중에 몇 번째에 넣어주는지로 하면 될 것 같음
+            //남은 index중에 random으로 정해진 index를 골라 해당 index에 해당하는 위치에 할당
             let randomIndexPick = randomIntMax(noLimitRandomIndexRemainder.length)
-            console.log(randomIndexPick);
             let randomPick = noLimitRandomIndexRemainder[randomIndexPick]
-            console.log(randomPick);
             noLimitRandom[randomPick] = listParam[lp2]
-            console.log(noLimitRandom[randomPick]);
+            //현재 채워진 index에 false를 할당
             noLimitRandomIndex[randomPick] = false;
         }
 
@@ -297,25 +280,32 @@ $(document).ready(function () {
         // shuffle에서 할당 유무를 판단하는 template, 내부 history
         let shuffleForm = templateCreate(shuffleListParam, shuffleGroupParam);
         let shuffleList = [];
-
-        if (allHistoryCheck(historyParam, shuffleListParam, shuffleGroupParam, true) == true) {
+        // 모두 true 일때
+        if (allHistoryCheck(historyParam, shuffleListParam, true) == true) {
             // 랜덤으로 돌리고 배정해줘야 함. 일단은 임시로 TODO
-            shuffleList = originList;
+            shuffleList = noLimitRandomList(originList);
+            //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
+
         } else {
-            if(allHistoryCheck(historyParam, shuffleListParam, shuffleGroupParam, false) == true){
+            // 모두 false 일때
+            if (allHistoryCheck(historyParam, shuffleListParam, false) == true) {
                 //히스토리 초기화
+                historyObject = groupObjCreate(shuffleListParam, shuffleGroupParam);
+                shuffleList = noLimitRandomList(originList);
+                //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
 
-            }else{
+                // true, false 섞여있을때
+            } else {
 
+                // 외부 history
+                let nowHistory = historyParam;
+
+
+                // shuffle을 마치고 현재 할당된 상태를 historyObj에 반영
+                itemHistory();
+
+                nowList = shuffleList;
             }
-            // 외부 history
-            let nowHistory = historyParam;
-
-
-            // shuffle을 마치고 현재 할당된 상태를 historyObj에 반영
-            itemHistory();
-
-            nowList = shuffleList;
         }
 
         return shuffleList;
@@ -332,6 +322,17 @@ $(document).ready(function () {
             $('li').eq(i).text(renderListFormattingParam[i]);
         }
     }
+
+    /* 
+        @param initList 초기 list
+        @param initGroups 초기 그룹 수
+
+        초기 세팅이 되는 부분
+    */
+    const createInit = function (initList, initGroups) {
+        historyObject = groupObjCreate(initList, initGroups);
+        nowList = initList;
+    };
 
     /* 
         초기화를 하고 처음 섞어서(shuffle) 기록(itemHistory) 후
