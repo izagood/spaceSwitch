@@ -153,7 +153,11 @@ $(document).ready(function () {
     */
     const changeFormToList = function (formParam) {
         let forRenderList = [];
-
+        for(var lp1=0; lp1<formParam.length; lp1++){
+            for(var lp2=0; lp2<formParam[lp1].length; lp2++){
+                forRenderList.push(formParam[lp1][lp2]);
+            }
+        }
 
         return forRenderList;
     };
@@ -262,6 +266,24 @@ $(document).ready(function () {
         return noLimitRandom;
     }
 
+    const twoArrayRemainderIndex = function (twoArrayIndexList) {
+        let remainList;
+        var count1Array = 0;
+        var count2Array = 0;
+
+        for (var lp1 = 0; lp1 < twoArrayIndexList.length; lp1++) {
+            for (var lp2 = 0; lp2 < twoArrayIndexList[lp1].length; lp2++) {
+                if (twoArrayIndexList[lp1][lp2] == true) {
+                    remainList[count1Array][count2Array] = lp2;
+                    count2Array++;
+                }
+            }
+            count1Array++;
+        }
+
+        return remainList;
+    };
+
     /* 
         @param shuffleListParam list형태 
         @param shuffleGroupParam 그룹 수 
@@ -278,36 +300,56 @@ $(document).ready(function () {
     */
     const shuffle = function (historyParam, shuffleListParam, shuffleGroupParam) {
         // shuffle에서 할당 유무를 판단하는 template, 내부 history
-        let shuffleForm = templateCreate(shuffleListParam, shuffleGroupParam);
+        let shuffleFromHistoryIndex = templateCreate(shuffleListParam, shuffleGroupParam);
+        let shuffleFromHistoryIndexRemainder;
         let shuffleList = [];
+        let shuffleListForm;
+        // 외부 history
+        let nowHistory = historyParam;
+
         // 모두 true 일때
         if (allHistoryCheck(historyParam, shuffleListParam, true) == true) {
-            // 랜덤으로 돌리고 배정해줘야 함. 일단은 임시로 TODO
+            // 랜덤으로 돌리고 배정해줘야 함.
             shuffleList = noLimitRandomList(originList);
+            shuffleListForm = changeListToForm(shuffleList);
+            
             //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
-
+            for (var lp2 = 0; lp2 < shuffleListForm.length; lp2++) {
+                for (var lp3 = 0; lp3 < shuffleListForm[lp2].length; lp3++) {
+                    itemHistory(nowHistory, shuffleListForm[lp2][lp3], lp2, lp3);
+                }
+            }
         } else {
             // 모두 false 일때
             if (allHistoryCheck(historyParam, shuffleListParam, false) == true) {
                 //히스토리 초기화
                 historyObject = groupObjCreate(shuffleListParam, shuffleGroupParam);
+                // 랜덤 배정 후 히스토리 기록을 위해 formatting
                 shuffleList = noLimitRandomList(originList);
+                shuffleListForm = changeListToForm(shuffleList);
                 //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
+                for (var lp2 = 0; lp2 < shuffleListForm.length; lp2++) {
+                    for (var lp3 = 0; lp3 < shuffleListForm[lp2].length; lp3++) {
+                        itemHistory(nowHistory, shuffleListForm[lp2][lp3], lp2, lp3);
+                    }
+                }
 
-                // true, false 섞여있을때
-            } else {
+            } else { // true, false 섞여있을때
 
-                // 외부 history
-                let nowHistory = historyParam;
+                // 각 사람별 가능한거 뽑아
+                let = twoArrayRemainderIndex(nowHistory);
 
+                // 할당된 상태를 for문을 돌면서 히스토리에 각각 기록
+                for (var lp1 = 0; lp1 < shuffleListParam.length; lp1++) {
 
-                // shuffle을 마치고 현재 할당된 상태를 historyObj에 반영
-                itemHistory();
+                    // shuffle을 마치고 현재 할당된 상태를 historyObj에 반영
+                    itemHistory(nowHistory, shuffleListParam[lp1], itemHistoryGroupValue, itemHistoryPlaceValue);
+                }
 
-                nowList = shuffleList;
             }
         }
-
+        
+        nowList = changeFormToList(shuffleList);
         return shuffleList;
     };
     // ------------------------셔플 관련 함수-------------------------------
