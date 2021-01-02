@@ -280,14 +280,14 @@ $(document).ready(function () {
     }
 
     const twoArrayRemainderIndex = function (twoArrayIndexList) {
-        let remainList;
+        let remainList = [];
         var count1Array = 0;
         var count2Array = 0;
 
         for (var lp1 = 0; lp1 < twoArrayIndexList.length; lp1++) {
             for (var lp2 = 0; lp2 < twoArrayIndexList[lp1].length; lp2++) {
                 if (twoArrayIndexList[lp1][lp2] == true) {
-                    remainList[count1Array][count2Array] = lp2;
+                    remainList[count1Array].push([count2Array]);
                     count2Array++;
                 }
             }
@@ -314,9 +314,9 @@ $(document).ready(function () {
     const shuffle = function (historyParam, shuffleListParam, shuffleGroupParam) {
         // shuffle에서 할당 유무를 판단하는 template, 내부 history
         let shuffleFromHistoryIndex = templateCreate(shuffleListParam, shuffleGroupParam);
-        let shuffleFromHistoryIndexRemainder;
+        let shuffleFromHistoryIndexRemainder = [];
         let shuffleList = [];
-        let shuffleListForm;
+        let shuffleListForm = [];
         // 외부 history
         let nowHistory = historyParam;
 
