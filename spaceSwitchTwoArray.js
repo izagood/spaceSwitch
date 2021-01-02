@@ -265,10 +265,15 @@ $(document).ready(function () {
         for(var lp2=0; lp2<listParam.length; lp2++){
             //남아있는 index 배열
             noLimitRandomIndexRemainder = remainderIndex(noLimitRandomIndex);
+            console.log(noLimitRandomIndexRemainder);
             //남은 index중에 몇 번째에 넣어주는지로 하면 될 것 같음
             let randomIndexPick = randomIntMax(noLimitRandomIndexRemainder.length)
+            console.log(randomIndexPick);
             let randomPick = noLimitRandomIndexRemainder[randomIndexPick]
+            console.log(randomPick);
             noLimitRandom[randomPick] = listParam[lp2]
+            console.log(noLimitRandom[randomPick]);
+            noLimitRandomIndex[randomPick] = false;
         }
 
         return noLimitRandom;
