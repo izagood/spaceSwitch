@@ -153,8 +153,8 @@ $(document).ready(function () {
     */
     const changeFormToList = function (formParam) {
         let forRenderList = [];
-        for(var lp1=0; lp1<formParam.length; lp1++){
-            for(var lp2=0; lp2<formParam[lp1].length; lp2++){
+        for (var lp1 = 0; lp1 < formParam.length; lp1++) {
+            for (var lp2 = 0; lp2 < formParam[lp1].length; lp2++) {
                 forRenderList.push(formParam[lp1][lp2]);
             }
         }
@@ -173,8 +173,21 @@ $(document).ready(function () {
         params들을 받아서 해당 위치를 false로 변경해 줌.
         초기화 했던 Obj에 하나씩 false로 바꾸면서 히스토리를 만든다.
     */
-    const itemHistory = function (itemHistoryObj, itemHistoryKey, itemHistoryGroupValue, itemHistoryPlaceValue) {
+    const oneItemHistory = function (itemHistoryObj, itemHistoryKey, itemHistoryGroupValue, itemHistoryPlaceValue) {
         itemHistoryObj[itemHistoryKey][itemHistoryGroupValue][itemHistoryPlaceValue] = false;
+    }
+    /* 
+        자리 히스토리
+        formatting된 리스트가 들어오면 한번에 히스토리 정리
+    */
+    const listItemHistory = function (itemHistoryObj, itemHistoryFormList) {
+
+        for (var lp1 = 0; lp1 < itemHistoryFormList.length; lp1++) {
+            for (var lp2 = 0; lp2 < itemHistoryFormList[lp1].length; lp2++) {
+                itemHistoryObj[itemHistoryFormList[lp1][lp2]][lp1][lp2] = false;
+            }
+        }
+
     }
 
     /* 
@@ -312,13 +325,9 @@ $(document).ready(function () {
             // 랜덤으로 돌리고 배정해줘야 함.
             shuffleList = noLimitRandomList(originList);
             shuffleListForm = changeListToForm(shuffleList);
-            
+
             //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
-            for (var lp2 = 0; lp2 < shuffleListForm.length; lp2++) {
-                for (var lp3 = 0; lp3 < shuffleListForm[lp2].length; lp3++) {
-                    itemHistory(nowHistory, shuffleListForm[lp2][lp3], lp2, lp3);
-                }
-            }
+            listItemHistory(nowHistory, shuffleListForm);
         } else {
             // 모두 false 일때
             if (allHistoryCheck(historyParam, shuffleListParam, false) == true) {
@@ -328,14 +337,10 @@ $(document).ready(function () {
                 shuffleList = noLimitRandomList(originList);
                 shuffleListForm = changeListToForm(shuffleList);
                 //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
-                for (var lp2 = 0; lp2 < shuffleListForm.length; lp2++) {
-                    for (var lp3 = 0; lp3 < shuffleListForm[lp2].length; lp3++) {
-                        itemHistory(nowHistory, shuffleListForm[lp2][lp3], lp2, lp3);
-                    }
-                }
+                listItemHistory(nowHistory, shuffleListForm);
 
             } else { // true, false 섞여있을때
-
+                // oneItemHistory
                 // 각 사람별 가능한거 뽑아
                 let = twoArrayRemainderIndex(nowHistory);
 
@@ -348,7 +353,7 @@ $(document).ready(function () {
 
             }
         }
-        
+
         nowList = changeFormToList(shuffleList);
         return shuffleList;
     };
