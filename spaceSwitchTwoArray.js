@@ -255,6 +255,7 @@ $(document).ready(function () {
         let noLimitRandom = [];
         let noLimitRandomIndex = [];
         let noLimitRandomIndexRemainder = [];
+
         // index할당
         for(var lp1=0; lp1<listParam.length; lp1++){
             noLimitRandomIndex.push(true);
@@ -262,12 +263,12 @@ $(document).ready(function () {
 
         // 순서대로 돌리면서 넣는데 들어가는 곳이 랜덤
         for(var lp2=0; lp2<listParam.length; lp2++){
+            //남아있는 index 배열
             noLimitRandomIndexRemainder = remainderIndex(noLimitRandomIndex);
             //남은 index중에 몇 번째에 넣어주는지로 하면 될 것 같음
-            for(){
-
-            }
-            noLimitRandom[] = listParam[lp2]
+            let randomIndexPick = randomIntMax(noLimitRandomIndexRemainder.length)
+            let randomPick = noLimitRandomIndexRemainder[randomIndexPick]
+            noLimitRandom[randomPick] = listParam[lp2]
         }
 
         return noLimitRandom;
