@@ -63,15 +63,6 @@ $(document).ready(function () {
         return returnemptyList
     };
 
-    const stackItem = function (stackItemTarget) {
-        // stackItemTarget에 해당 순번이 배열에 들어간다.
-
-    };
-
-    const firstPick = function() {
-        
-    };
-
     const shuffleList = function () {
         for (const i in list) {
             let randomNum = rangeRandom(i);

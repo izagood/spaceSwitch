@@ -33,7 +33,7 @@ $(document).ready(function () {
     const hi = '연결 성공';
     console.log(hi);
 
-    const originlist = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍',
+    const originList = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍',
         '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
     let nowList = [];
     let historyObject = {};
@@ -185,26 +185,37 @@ $(document).ready(function () {
     /* 
         @param checkObj 체크해야할 obj
         @param checkList for문 돌리기 위한 list
+        @param groups 그룹 수
+        @param checkBoolean 체크할 boolean
     
-        모든 히스토리가 false인지 체크하고 모두 false라면 모두 true로 변경해준다.
+        모든 히스토리가 checkBoolean으로 되어있는지 체크
     */
-    const allHistoryFalseCheck = function (checkObj, checkList, groups) {
-        let trueFlag = false;
+    const allHistoryCheck = function (checkObj, checkList, groups, checkBoolean) {
+        let allFlag = true;
+
+        // boolean이 하나라도 있는지 체크해야 하므로 입력 값과 반대로 바꿔줘야 한다.
+        if (checkBoolean == true) {
+            checkBoolean = false;
+        } else {
+            checkBoolean = true;
+        }
 
         for (var lp1 = 0; lp1 < checkList.length; lp1++) {
             for (var lp2 = 0; lp2 < checkObj[checkList[lp1]].length; lp2++) {
                 for (var lp3 = 0; lp3 < checkObj[checkList[lp1]][lp2].length; lp3++) {
-                    if (checkObj[checkList[lp1]][lp2][lp3] == true) {
-                        trueFlag = true;
+                    if (checkObj[checkList[lp1]][lp2][lp3] == checkBoolean) {
+                        trueFlag = false;
                     }
                 }
             }
         }
-        
+
         // historyObj 초기화
-        if(trueFlag == true){
+        if (trueFlag == true) {
             historyObject = groupObjCreate(checkList, groups);
         }
+
+        return allFlag;
     };
     // ------------------------히스토리 관련 함수-------------------------------
 
@@ -227,6 +238,41 @@ $(document).ready(function () {
         return Math.floor(Math.random() * Math.floor(max));
     }
 
+    const remainderIndex = function(indexList){
+        let remainList = [];
+        var count1 = 0;
+        for(var lp1=0; lp1<indexList.length; lp1++){
+            if(indexList[lp1] == true){
+                remainList[count1] = lp1;
+                count1++;
+            }
+        }
+
+        return remainList;
+    };
+
+    const noLimitRandomList = function(listParam){
+        let noLimitRandom = [];
+        let noLimitRandomIndex = [];
+        let noLimitRandomIndexRemainder = [];
+        // index할당
+        for(var lp1=0; lp1<listParam.length; lp1++){
+            noLimitRandomIndex.push(true);
+        }
+
+        // 순서대로 돌리면서 넣는데 들어가는 곳이 랜덤
+        for(var lp2=0; lp2<listParam.length; lp2++){
+            noLimitRandomIndexRemainder = remainderIndex(noLimitRandomIndex);
+            //남은 index중에 몇 번째에 넣어주는지로 하면 될 것 같음
+            for(){
+
+            }
+            noLimitRandom[] = listParam[lp2]
+        }
+
+        return noLimitRandom;
+    }
+
     /* 
         @param shuffleListParam list형태 
         @param shuffleGroupParam 그룹 수 
@@ -241,15 +287,31 @@ $(document).ready(function () {
 
         근데 이게 shuffle을 돌릴 때 히스토리를 조사해서 돌린 최종 list가 나와야함.
     */
-    const shuffle = function (shuffleListParam, shuffleGroupParam) {
-        // shuffle에서 할당 유무를 판단하는 template
+    const shuffle = function (historyParam, shuffleListParam, shuffleGroupParam) {
+        // shuffle에서 할당 유무를 판단하는 template, 내부 history
         let shuffleForm = templateCreate(shuffleListParam, shuffleGroupParam);
-
-        // shuffle을 마치고 현재 할당된 상태를 historyObj에 반영
-        itemHistory();
         let shuffleList = [];
 
-        nowList = shuffleList;
+        if (allHistoryCheck(historyParam, shuffleListParam, shuffleGroupParam, true) == true) {
+            // 랜덤으로 돌리고 배정해줘야 함. 일단은 임시로 TODO
+            shuffleList = originList;
+        } else {
+            if(allHistoryCheck(historyParam, shuffleListParam, shuffleGroupParam, false) == true){
+                //히스토리 초기화
+
+            }else{
+
+            }
+            // 외부 history
+            let nowHistory = historyParam;
+
+
+            // shuffle을 마치고 현재 할당된 상태를 historyObj에 반영
+            itemHistory();
+
+            nowList = shuffleList;
+        }
+
         return shuffleList;
     };
     // ------------------------셔플 관련 함수-------------------------------
@@ -271,8 +333,8 @@ $(document).ready(function () {
         renderList
     */
     $("#setSeat").on("click", function () {
-        createInit(originlist, 3);
-        var nowRenderList = shuffle(nowList, 3);
+        createInit(originList, 3);
+        var nowRenderList = shuffle(historyObject, nowList, 3);
         renderList(nowRenderList);
     });
     /* 
@@ -281,7 +343,7 @@ $(document).ready(function () {
     renderList
     */
     $("#randomSeat").on("click", function () {
-        var nowRenderList = shuffle(nowList);
+        var nowRenderList = shuffle(historyObject, nowList, 3);
         renderList(nowRenderList);
     });
 });
