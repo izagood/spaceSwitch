@@ -329,6 +329,7 @@ $(document).ready(function () {
             //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
             listItemHistory(nowHistory, shuffleListForm);
         } else {
+            // TODO
             // 모두 false 일때
             if (allHistoryCheck(historyParam, shuffleListParam, false) == true) {
                 //히스토리 초기화
