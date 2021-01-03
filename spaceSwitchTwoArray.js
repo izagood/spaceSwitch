@@ -269,9 +269,9 @@ $(document).ready(function () {
             //남아있는 index 배열
             noLimitRandomIndexRemainder = remainderIndex(noLimitRandomIndex);
             //남은 index중에 random으로 정해진 index를 골라 해당 index에 해당하는 위치에 할당
-            let randomIndexPick = randomIntMax(noLimitRandomIndexRemainder.length)
-            let randomPick = noLimitRandomIndexRemainder[randomIndexPick]
-            noLimitRandom[randomPick] = listParam[lp2]
+            let randomIndexPick = randomIntMax(noLimitRandomIndexRemainder.length);
+            let randomPick = noLimitRandomIndexRemainder[randomIndexPick];
+            noLimitRandom[randomPick] = listParam[lp2];
             //현재 채워진 index에 false를 할당
             noLimitRandomIndex[randomPick] = false;
         }
@@ -328,7 +328,6 @@ $(document).ready(function () {
             //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
             listItemHistory(nowHistory, shuffleListForm);
         } else {
-            // TODO
             // 모두 false 일때
             if (allHistoryCheck(historyParam, shuffleListParam, false) == true) {
                 //히스토리 초기화
@@ -339,16 +338,33 @@ $(document).ready(function () {
                 //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
                 listItemHistory(nowHistory, shuffleListForm);
 
-            } else { // true, false 섞여있을때
+            } else { // true, false 섞여있을때 TODO
                 // oneItemHistory
-                // 각 사람별 가능한거 뽑아
-                let = twoArrayRemainderIndex(nowHistory);
+                // 각 사람별 가능한거 뽑아서 남은 자리에 배정
+                for (var lp2 = 0; lp2 < shuffleListParam.length; lp2++) {
+                    let memberHistory = twoArrayRemainderIndex(nowHistory[shuffleListParam[lp2]]);
+
+                    let nowListForm = changeListToForm(nowList);
+                    let nowGroup = 0;
+                    // nowList에서 현재의 그룹을 찾고 이외의 그룹에서 돌려야 함.
+                    for (var lp3 = 0; lp3 < nowListForm.length; lp3++) {
+                        for (var lp4 = 0; lp4 < nowListForm[lp3].length; lp4++) {
+                            if (nowListForm[lp3][lp4] == shuffleListParam[lp2]) {
+                                nowGroup = lp3;
+                            }
+                        }
+                    }
+
+                    let twoArrayRandomIndexPick = randomIntMax(memberHistory[0].length);
+                    let twoArrayRandomPick = memberHistory[0][twoArrayRandomIndexPick];
+                    // TODO shuffleListForm = 
+                }
 
                 // 할당된 상태를 for문을 돌면서 히스토리에 각각 기록
-                for (var lp1 = 0; lp1 < shuffleListParam.length; lp1++) {
+                for (var lp1 = 0; lp1 < 배열마친리스트.length; lp1++) {
 
                     // shuffle을 마치고 현재 할당된 상태를 historyObj에 반영
-                    itemHistory(nowHistory, shuffleListParam[lp1], itemHistoryGroupValue, itemHistoryPlaceValue);
+                    itemHistory(nowHistory, 배열마친리스트[lp1], itemHistoryGroupValue, itemHistoryPlaceValue);
                 }
             }
         }
