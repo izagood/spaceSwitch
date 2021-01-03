@@ -280,21 +280,20 @@ $(document).ready(function () {
     }
 
     const twoArrayRemainderIndex = function (twoArrayIndexList) {
-        let remainList = [];
-        var count1Array = 0;
-        var count2Array = 0;
+        let remain1Array = [];
+        let remain2Array = [];
 
         for (var lp1 = 0; lp1 < twoArrayIndexList.length; lp1++) {
             for (var lp2 = 0; lp2 < twoArrayIndexList[lp1].length; lp2++) {
                 if (twoArrayIndexList[lp1][lp2] == true) {
-                    remainList[count1Array].push([count2Array]);
-                    count2Array++;
+                    remain2Array.push(lp2);
                 }
             }
-            count1Array++;
+            remain1Array.push(remain2Array);
+            remain2Array = [];
         }
 
-        return remainList;
+        return remain1Array;
     };
 
     /* 
@@ -351,7 +350,6 @@ $(document).ready(function () {
                     // shuffle을 마치고 현재 할당된 상태를 historyObj에 반영
                     itemHistory(nowHistory, shuffleListParam[lp1], itemHistoryGroupValue, itemHistoryPlaceValue);
                 }
-
             }
         }
 
