@@ -328,6 +328,7 @@ const findNowGroup = function (findNowGroupList, findNowGroupMemberName) {
 const shuffle = function (historyParam, shuffleListParam, shuffleGroupParam) {
     // shuffle에서 할당 유무를 판단하는 template, 내부 history
     let shuffleFromHistoryIndex = templateCreate(shuffleListParam, shuffleGroupParam);
+    console.log('shuffleFromHistoryIndex', shuffleFromHistoryIndex)
     let shuffleFromHistoryIndexRemainder = [];
     let shuffleList = [];
     let shuffleListForm = [];
@@ -338,8 +339,10 @@ const shuffle = function (historyParam, shuffleListParam, shuffleGroupParam) {
     if (allHistoryCheck(nowHistory, shuffleListParam, true) == true) {
         // 랜덤으로 돌리고 배정해줘야 함.
         shuffleList = noLimitRandomList(originList);
-        shuffleListForm = changeListToForm(shuffleList);
-
+        console.log('shuffleList', shuffleList)
+        shuffleListForm = changeListToForm(shuffleList, 3);
+        console.log('shuffleListForm', shuffleListForm)
+        
         //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
         listItemHistory(nowHistory, shuffleListForm);
     } else {
@@ -347,26 +350,35 @@ const shuffle = function (historyParam, shuffleListParam, shuffleGroupParam) {
         if (allHistoryCheck(nowHistory, shuffleListParam, false) == true) {
             //히스토리 초기화
             historyObject = groupObjCreate(shuffleListParam, shuffleGroupParam);
+            console.log('historyObject', historyObject)
             // 랜덤 배정 후 히스토리 기록을 위해 formatting
             shuffleList = noLimitRandomList(originList);
+            console.log('shuffleList', shuffleList)
             shuffleListForm = changeListToForm(shuffleList);
+            console.log('shuffleListForm', shuffleListForm)
             //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
             listItemHistory(nowHistory, shuffleListForm);
-
+            
         } else { // true, false 섞여있을때
             // oneItemHistory
             // 각 사람별 가능한거 뽑아서 남은 자리에 배정
             for (var lp2 = 0; lp2 < shuffleListParam.length; lp2++) {
                 let memberIndexRemainder = twoArrayRemainderIndex(nowHistory[shuffleListParam[lp2]]);
-
+                console.log('shuffleListParam[lp2]', shuffleListParam[lp2])
+                console.log('memberIndexRemainder', memberIndexRemainder)
+                
                 let nowGroup = findNowGroup(nowList, shuffleListParam[lp2]);
+                console.log('nowGroup', nowGroup)
                 let groupIndexPick = randomIntMax(memberIndexRemainder.length);
+                console.log('groupIndexPick', groupIndexPick)
                 while (groupIndexPick == nowGroup) {
                     groupIndexPick = randomIntMax(memberIndexRemainder.length);
                 }
                 //현재의 그룹을 제외한 다른 곳에 들어가야함
                 let twoArrayRandomIndexPick = randomIntMax(memberIndexRemainder[groupIndexPick].length);
+                console.log('twoArrayRandomIndexPick', twoArrayRandomIndexPick)
                 let twoArrayRandomPick = memberIndexRemainder[groupIndexPick][twoArrayRandomIndexPick];
+                console.log('twoArrayRandomPick', twoArrayRandomPick)
                 shuffleListForm[groupIndexPick][twoArrayRandomPick] = shuffleListParam[lp2];
                 shuffleFromHistoryIndex[groupIndexPick][twoArrayRandomPick] = false;
             }
