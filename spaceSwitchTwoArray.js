@@ -306,11 +306,27 @@ $(document).ready(function () {
         }
         return findNowGroupNum;
     }
+    /* 
+        @param outterHistory Form 형식의 list
+        @param innerHistory Form 형식의 list
 
-    const inOutTrue = function(innerHistory, outterHistory){
-        let inOutTrueArray = [];
+        inner outter 둘 다 true를 반환
+    */
+    const inOutTrueRemainder = function (outterHistory, innerHistory) {
+        let inOutTrue1Array = [];
+        let inOutTrue2Array = [];
 
-        return inOutTrueArray;
+        for (var lp1 = 0; lp1 < outterHistory.length; lp1++) {
+            for (var lp2 = 0; lp2 < outterHistory[lp1].length; lp2++) {
+                if (outterHistory[lp1][lp2] == true && innerHistory[lp1][lp2] == true) {
+                    inOutTrue2Array.push(lp2);
+                }
+            }
+            inOutTrue1Array.push(inOutTrue2Array);
+            inOutTrue2Array = [];
+        }
+
+        return inOutTrue1Array;
     };
 
     /* 
@@ -336,7 +352,8 @@ $(document).ready(function () {
         // 내부 리스트
         let innerShuffleList = [];
         let innerShuffleListForm = templateCreate(shuffleListParam, shuffleGroupParam);
-        // 외부 history
+        // 내외부 공통 history
+        let innerOutterHistoryIndexRemainder = [];
 
         // 모두 true 일때
         if (allHistoryCheck(historyParam, shuffleListParam, true) == true) {
@@ -358,8 +375,12 @@ $(document).ready(function () {
                 listItemHistory(historyParam, innerShuffleListForm);
 
             } else { // true, false 섞여있을때
+
                 // 각 사람별 가능한거 뽑아서 남은 자리에 배정
                 for (var lp1 = 0; lp1 < shuffleListParam.length; lp1++) {
+
+                    // 내부 외부 히스토리 공통적으로 남은거
+                    innerOutterHistoryIndexRemainder = inOutTrueRemainder(historyParam[shuffleListParam[lp1]], innerHistoryIndex);
                     // 외부 히스토리 남은거
                     outterHistoryIndexRemainder = twoArrayRemainderIndex(historyParam[shuffleListParam[lp1]]);
 
