@@ -117,10 +117,9 @@ const templateCreate = function (membersList, groups) {
 const groupObjCreate = function (membersList, groups) {
     // 객체 초기화
     let jsonObj = {};
-    const array = templateCreate(membersList, groups);
     // key : value 형태로 객체 생성
     for (var lp1 = 0; lp1 < membersList.length; lp1++) {
-        jsonObj[membersList[lp1]] = array;
+        jsonObj[membersList[lp1]] = templateCreate(membersList, groups);
     }
     return jsonObj;
 };
@@ -169,7 +168,6 @@ const changeFormToList = function (formParam) {
     @param itemHistoryKey 맴버 이름
     @param itemHistoryGroupValue 배열의 그룹 값
     @param itemHistoryPlaceValue 그룹에서의 위치 값
-
     params들을 받아서 해당 위치를 false로 변경해 줌.
     초기화 했던 Obj에 하나씩 false로 바꾸면서 히스토리를 만든다.
 */
@@ -178,13 +176,19 @@ const oneItemHistory = function (itemHistoryObj, itemHistoryKey, itemHistoryGrou
 }
 /* 
     자리 히스토리
+    @param itemHistoryObj 기록이 저장될 object
+    @param itemHistoryFormList 기록될 리스트
+
+    params들을 받아서 해당 위치를 false로 변경해 줌.
+    초기화 했던 Obj에 하나씩 false로 바꾸면서 히스토리를 만든다.
+
+    자리 히스토리
     formatting된 리스트가 들어오면 한번에 히스토리 정리
 */
 const listItemHistory = function (itemHistoryObj, itemHistoryFormList) {
-
     for (var lp1 = 0; lp1 < itemHistoryFormList.length; lp1++) {
-        for (var lp2 = 0; lp2 < itemHistoryFormList[lp1].length; lp2++) {
-            itemHistoryObj[itemHistoryFormList[lp1][lp2]][lp1][lp2] = false;
+        for(var lp2=0; lp2 < itemHistoryFormList[lp1].length; lp2++){
+            oneItemHistory(itemHistoryObj, itemHistoryFormList[lp1][lp2], lp1, lp2);
         }
     }
 
@@ -223,17 +227,6 @@ const allHistoryCheck = function (checkObj, checkList, checkBoolean) {
 // ------------------------히스토리 관련 함수-------------------------------
 
 // ------------------------셔플 관련 함수-------------------------------
-/*
-    @param min min 이상의 정수
-    @param max max 미만의 정수
-
-    만약 min = 0 , max = 3 이면 0,1,2가 나옴
-*/
-const randomIntMinMax = function (min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min);
-}
 /* 
     @param max max 미만의 0이상의 정수
 */
@@ -328,7 +321,7 @@ const findNowGroup = function (findNowGroupList, findNowGroupMemberName) {
 const shuffle = function (historyParam, shuffleListParam, shuffleGroupParam) {
     // shuffle에서 할당 유무를 판단하는 template, 내부 history
     let shuffleFromHistoryIndex = templateCreate(shuffleListParam, shuffleGroupParam);
-    console.log('shuffleFromHistoryIndex', shuffleFromHistoryIndex)
+    console.log('shuffleFromHistoryIndex', shuffleFromHistoryIndex);
     let shuffleFromHistoryIndexRemainder = [];
     let shuffleList = [];
     let shuffleListForm = [];
@@ -339,10 +332,10 @@ const shuffle = function (historyParam, shuffleListParam, shuffleGroupParam) {
     if (allHistoryCheck(nowHistory, shuffleListParam, true) == true) {
         // 랜덤으로 돌리고 배정해줘야 함.
         shuffleList = noLimitRandomList(originList);
-        console.log('shuffleList', shuffleList)
+        console.log('shuffleList', shuffleList);
         shuffleListForm = changeListToForm(shuffleList, 3);
-        console.log('shuffleListForm', shuffleListForm)
-        
+        console.log('shuffleListForm', shuffleListForm);
+
         //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
         listItemHistory(nowHistory, shuffleListForm);
     } else {
@@ -350,43 +343,48 @@ const shuffle = function (historyParam, shuffleListParam, shuffleGroupParam) {
         if (allHistoryCheck(nowHistory, shuffleListParam, false) == true) {
             //히스토리 초기화
             historyObject = groupObjCreate(shuffleListParam, shuffleGroupParam);
-            console.log('historyObject', historyObject)
+            console.log('historyObject', historyObject);
             // 랜덤 배정 후 히스토리 기록을 위해 formatting
             shuffleList = noLimitRandomList(originList);
-            console.log('shuffleList', shuffleList)
-            shuffleListForm = changeListToForm(shuffleList);
-            console.log('shuffleListForm', shuffleListForm)
+            console.log('shuffleList', shuffleList);
+            shuffleListForm = changeListToForm(shuffleList, 3);
+            console.log('shuffleListForm', shuffleListForm);
             //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
             listItemHistory(nowHistory, shuffleListForm);
-            
+
         } else { // true, false 섞여있을때
             // oneItemHistory
             // 각 사람별 가능한거 뽑아서 남은 자리에 배정
             for (var lp2 = 0; lp2 < shuffleListParam.length; lp2++) {
                 let memberIndexRemainder = twoArrayRemainderIndex(nowHistory[shuffleListParam[lp2]]);
-                console.log('shuffleListParam[lp2]', shuffleListParam[lp2])
-                console.log('memberIndexRemainder', memberIndexRemainder)
-                
+                console.log('shuffleListParam[lp2]', shuffleListParam[lp2]);
+                console.log('memberIndexRemainder', memberIndexRemainder);
+
                 let nowGroup = findNowGroup(nowList, shuffleListParam[lp2]);
-                console.log('nowGroup', nowGroup)
+                console.log('nowGroup', nowGroup);
                 let groupIndexPick = randomIntMax(memberIndexRemainder.length);
-                console.log('groupIndexPick', groupIndexPick)
+                console.log('groupIndexPick', groupIndexPick);
                 while (groupIndexPick == nowGroup) {
                     groupIndexPick = randomIntMax(memberIndexRemainder.length);
+                    console.log('groupIndexPick', groupIndexPick);
                 }
                 //현재의 그룹을 제외한 다른 곳에 들어가야함
                 let twoArrayRandomIndexPick = randomIntMax(memberIndexRemainder[groupIndexPick].length);
-                console.log('twoArrayRandomIndexPick', twoArrayRandomIndexPick)
+                console.log('twoArrayRandomIndexPick', twoArrayRandomIndexPick);
                 let twoArrayRandomPick = memberIndexRemainder[groupIndexPick][twoArrayRandomIndexPick];
-                console.log('twoArrayRandomPick', twoArrayRandomPick)
+                console.log('twoArrayRandomPick', twoArrayRandomPick);
                 shuffleListForm[groupIndexPick][twoArrayRandomPick] = shuffleListParam[lp2];
+                console.log('shuffleListForm[groupIndexPick][twoArrayRandomPick]', shuffleListForm[groupIndexPick][twoArrayRandomPick]);
                 shuffleFromHistoryIndex[groupIndexPick][twoArrayRandomPick] = false;
+                console.log('shuffleFromHistoryIndex[groupIndexPick][twoArrayRandomPick]', shuffleFromHistoryIndex[groupIndexPick][twoArrayRandomPick]);
+                console.log('shuffleFromHistoryIndex', shuffleFromHistoryIndex);
             }
             listItemHistory(nowHistory, shuffleListForm);
         }
     }
 
     nowList = changeFormToList(shuffleListForm);
+    console.log('nowList', nowList);
     return nowList;
 };
 // ------------------------셔플 관련 함수-------------------------------
