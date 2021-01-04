@@ -374,25 +374,46 @@ $(document).ready(function () {
                     if (innerHistoryIndex[groupIndexPick][twoArrayRandomPick] == true) {
                         innerShuffleListForm[groupIndexPick][twoArrayRandomPick] = shuffleListParam[lp1];
                         innerHistoryIndex[groupIndexPick][twoArrayRandomPick] = false;
-                        console.log('innerHistoryIndex',innerHistoryIndex);
+                        console.log('innerHistoryIndex', innerHistoryIndex);
                     } else {
+                        // 외부 히스토리에서는 true인데 내부 히스토리에서 false라는 이야기이므로
+                        // 내부 히스토리만 true로 맞춰주고 넣으면 된다.
                         console.log('else로 들어왔다')
-                        // 여기에서 외부와 내부 히스토리 남은게 공통인거에 넣어준다.
-                        // 여기 index에서 true인 애를 찾아서 
-                        // shuffleFromHistoryIndex[groupIndexPick][twoArrayRandomPick]
-                        for (var lp2 = 0; lp2 < outterHistoryIndexRemainder[groupIndexPick].length; lp2++) {
-                            if (outterHistoryIndexRemainder[groupIndexPick][lp2] == true) {
-                                twoArrayRandomPick = lp2;
-                                if (innerHistoryIndex[groupIndexPick][twoArrayRandomPick] == true) {
-                                    innerShuffleListForm[groupIndexPick][twoArrayRandomPick] = shuffleListParam[lp2];
-                                    innerHistoryIndex[groupIndexPick][twoArrayRandomPick] = false;
-
-                                }
+                        let inputDataFlag = false;
+                        for (var lp2 = 0; lp2 < innerHistoryIndex[groupIndexPick].length; lp2++) {
+                            if (innerHistoryIndex[groupIndexPick][lp2] == true) {
+                                innerShuffleListForm[groupIndexPick][lp2] = shuffleListParam[lp1];
+                                innerHistoryIndex[groupIndexPick][lp2] = false;
+                                inputDataFlag = true;
+                                break;
                             }
                         }
+                        if (inputDataFlag == false) {
+                            let groupDataFlag = false;
+                            for (var lp3 = 0; lp3 < innerHistoryIndex.length; lp3++) {
+                                if (lp3 != nowGroup) {
+                                    for (var lp4 = 0; lp4 < innerHistoryIndex[lp3].length; lp4++) {
+                                        if (innerHistoryIndex[lp3][lp4] == true) {
+                                            innerShuffleListForm[lp3][lp4] = shuffleListParam[lp1];
+                                            innerHistoryIndex[lp3][lp4] = false;
+                                            groupDataFlag = true;
+                                            break;
+                                        }
+                                    }
+                                    if(groupDataFlag == false){
+                                        for (var lp5 = 0; lp5 < innerHistoryIndex[nowGroup].length; lp5++) {
+                                            if (innerHistoryIndex[nowGroup][lp5] == true) {
+                                                innerShuffleListForm[nowGroup][lp4] = shuffleListParam[lp1];
+                                                innerHistoryIndex[nowGroup][lp5] = false;
+                                                break;
+                                            }
+                                        }
+                                    }
 
+                                }
 
-
+                            }
+                        }
                     }
                 }
                 console.log('shuffleListForm', innerShuffleListForm);
