@@ -377,16 +377,15 @@ $(document).ready(function () {
                         // console.log('innerHistoryIndex', innerHistoryIndex);
                     } else {
                         // innerHistoryIndexRemainder 이너에도 남은거에서 순서로 돌려야함.
-                        // 외부 히스토리에서는 true인데 내부 히스토리에서 false라는 이야기이므로
-                        // 내부 히스토리만 true로 맞춰주고 넣으면 된다.
+                        // 외부 내부 둘 다 true 인것 찾아야함.
+                        // 위에서 true였지만 내부 히스토리에 false이기 때문에
+                        // 내부 히스토리만 true한다고 해서 외부가 false일 수 있음
+                        // 결국 공통으로 true인 경우를 골라 내는 함수가 필요함.
                         console.log('else로 들어왔다')
                         innerHistoryIndexRemainder = twoArrayRemainderIndex(innerHistoryIndex);
-                        for (var lp2 = 0; lp2 < innerHistoryIndex[groupIndexPick].length; lp2++) {
-                            if (innerHistoryIndex[groupIndexPick][lp2] == true) {
-                                innerShuffleListForm[groupIndexPick][lp2] = shuffleListParam[lp1];
-                                innerHistoryIndex[groupIndexPick][lp2] = false;
-                                break;
-                            }
+                        for (var lp2 = 0; lp2 < innerHistoryIndexRemainder[groupIndexPick].length; lp2++) {
+                            innerShuffleListForm[groupIndexPick][lp2] = shuffleListParam[lp1];
+                            innerHistoryIndex[groupIndexPick][lp2] = false;
                         }
 
                     }
@@ -428,9 +427,9 @@ $(document).ready(function () {
     
     renderList
     */
-   $("#randomSeat").on("click", function () {
-       var nowRenderList = shuffle(historyObject, nowList, 3);
-       renderList(nowRenderList);
-       console.log('historyObject', historyObject)
+    $("#randomSeat").on("click", function () {
+        var nowRenderList = shuffle(historyObject, nowList, 3);
+        renderList(nowRenderList);
+        console.log('historyObject', historyObject)
     });
 });
