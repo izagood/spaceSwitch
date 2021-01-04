@@ -367,58 +367,31 @@ $(document).ready(function () {
                     // 내부 히스토리에 값이 있는 경우 다시 한번 픽하는 알고리즘 필요
                     // 랜덤으로 했을때 10번 이상 안 들어가면 수동으로 들어가게 해야할듯
                     let twoArrayRandomIndexPick = randomIntMax(outterHistoryIndexRemainder[groupIndexPick].length);
-                    console.log('twoArrayRandomIndexPick', twoArrayRandomIndexPick);
+                    // console.log('twoArrayRandomIndexPick', twoArrayRandomIndexPick);
                     let twoArrayRandomPick = outterHistoryIndexRemainder[groupIndexPick][twoArrayRandomIndexPick];
-                    console.log('twoArrayRandomPick', twoArrayRandomPick);
+                    // console.log('twoArrayRandomPick', twoArrayRandomPick);
                     // 내부 히스토리 == shuffleFromHistoryIndex
                     if (innerHistoryIndex[groupIndexPick][twoArrayRandomPick] == true) {
                         innerShuffleListForm[groupIndexPick][twoArrayRandomPick] = shuffleListParam[lp1];
                         innerHistoryIndex[groupIndexPick][twoArrayRandomPick] = false;
-                        console.log('innerHistoryIndex', innerHistoryIndex);
+                        // console.log('innerHistoryIndex', innerHistoryIndex);
                     } else {
+                        // innerHistoryIndexRemainder 이너에도 남은거에서 순서로 돌려야함.
                         // 외부 히스토리에서는 true인데 내부 히스토리에서 false라는 이야기이므로
                         // 내부 히스토리만 true로 맞춰주고 넣으면 된다.
                         console.log('else로 들어왔다')
-                        let inputDataFlag = false;
+                        innerHistoryIndexRemainder = twoArrayRemainderIndex(innerHistoryIndex);
                         for (var lp2 = 0; lp2 < innerHistoryIndex[groupIndexPick].length; lp2++) {
                             if (innerHistoryIndex[groupIndexPick][lp2] == true) {
                                 innerShuffleListForm[groupIndexPick][lp2] = shuffleListParam[lp1];
                                 innerHistoryIndex[groupIndexPick][lp2] = false;
-                                inputDataFlag = true;
                                 break;
                             }
                         }
-                        if (inputDataFlag == false) {
-                            let groupDataFlag = false;
-                            for (var lp3 = 0; lp3 < innerHistoryIndex.length; lp3++) {
-                                if (lp3 != nowGroup) {
-                                    for (var lp4 = 0; lp4 < innerHistoryIndex[lp3].length; lp4++) {
-                                        if (innerHistoryIndex[lp3][lp4] == true) {
-                                            innerShuffleListForm[lp3][lp4] = shuffleListParam[lp1];
-                                            innerHistoryIndex[lp3][lp4] = false;
-                                            groupDataFlag = true;
-                                            break;
-                                        }
-                                    }
-                                    if(groupDataFlag == false){
-                                        for (var lp5 = 0; lp5 < innerHistoryIndex[nowGroup].length; lp5++) {
-                                            if (innerHistoryIndex[nowGroup][lp5] == true) {
-                                                innerShuffleListForm[nowGroup][lp4] = shuffleListParam[lp1];
-                                                innerHistoryIndex[nowGroup][lp5] = false;
-                                                break;
-                                            }
-                                        }
-                                    }
 
-                                }
-
-                            }
-                        }
                     }
                 }
-                console.log('shuffleListForm', innerShuffleListForm);
                 listItemHistory(historyParam, innerShuffleListForm);
-                console.log('historyParam', historyParam);
             }
         }
 
@@ -448,14 +421,16 @@ $(document).ready(function () {
         nowList = originList
         var nowRenderList = shuffle(historyObject, nowList, 3);
         renderList(nowRenderList);
+        console.log('historyObject', historyObject)
     });
     /* 
     섞어서(shuffle) 기록(itemHistory) 후 
     
     renderList
     */
-    $("#randomSeat").on("click", function () {
-        var nowRenderList = shuffle(historyObject, nowList, 3);
-        renderList(nowRenderList);
+   $("#randomSeat").on("click", function () {
+       var nowRenderList = shuffle(historyObject, nowList, 3);
+       renderList(nowRenderList);
+       console.log('historyObject', historyObject)
     });
 });
