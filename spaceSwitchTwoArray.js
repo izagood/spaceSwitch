@@ -34,7 +34,8 @@ $(document).ready(function () {
     console.log(hi);
 
     const originList = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍',
-        '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
+        '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'
+    ];
     let nowList = [];
     let historyObject = {};
 
@@ -212,7 +213,7 @@ $(document).ready(function () {
             for (var lp2 = 0; lp2 < checkObj[checkList[lp1]].length; lp2++) {
                 for (var lp3 = 0; lp3 < checkObj[checkList[lp1]][lp2].length; lp3++) {
                     if (checkObj[checkList[lp1]][lp2][lp3] == checkBoolean) {
-                        trueFlag = false;
+                        allFlag = false;
                     }
                 }
             }
@@ -296,6 +297,21 @@ $(document).ready(function () {
         return remain1Array;
     };
 
+    const findNowGroup = function (findNowGroupList, findNowGroupMemberName) {
+        let findNowGroupNum = 0;
+
+        let findNowListForm = changeListToForm(findNowGroupList);
+        // nowList에서 현재의 그룹을 찾고 이외의 그룹에서 돌려야 함.
+        for (var lp1 = 0; lp1 < findNowListForm.length; lp1++) {
+            for (var lp2 = 0; lp2 < findNowListForm[lp1].length; lp2++) {
+                if (findNowListForm[lp3][lp4] == findNowGroupMemberName) {
+                    findNowGroupNum = lp3;
+                }
+            }
+        }
+        return findNowGroupNum;
+    }
+
     /* 
         @param shuffleListParam list형태 
         @param shuffleGroupParam 그룹 수 
@@ -320,7 +336,7 @@ $(document).ready(function () {
         let nowHistory = historyParam;
 
         // 모두 true 일때
-        if (allHistoryCheck(historyParam, shuffleListParam, true) == true) {
+        if (allHistoryCheck(nowHistory, shuffleListParam, true) == true) {
             // 랜덤으로 돌리고 배정해줘야 함.
             shuffleList = noLimitRandomList(originList);
             shuffleListForm = changeListToForm(shuffleList);
@@ -329,7 +345,7 @@ $(document).ready(function () {
             listItemHistory(nowHistory, shuffleListForm);
         } else {
             // 모두 false 일때
-            if (allHistoryCheck(historyParam, shuffleListParam, false) == true) {
+            if (allHistoryCheck(nowHistory, shuffleListParam, false) == true) {
                 //히스토리 초기화
                 historyObject = groupObjCreate(shuffleListParam, shuffleGroupParam);
                 // 랜덤 배정 후 히스토리 기록을 위해 formatting
@@ -337,40 +353,30 @@ $(document).ready(function () {
                 shuffleListForm = changeListToForm(shuffleList);
                 //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
                 listItemHistory(nowHistory, shuffleListForm);
-
-            } else { // true, false 섞여있을때 TODO
+                
+            } else { // true, false 섞여있을때
                 // oneItemHistory
                 // 각 사람별 가능한거 뽑아서 남은 자리에 배정
                 for (var lp2 = 0; lp2 < shuffleListParam.length; lp2++) {
-                    let memberHistory = twoArrayRemainderIndex(nowHistory[shuffleListParam[lp2]]);
-
-                    let nowListForm = changeListToForm(nowList);
-                    let nowGroup = 0;
-                    // nowList에서 현재의 그룹을 찾고 이외의 그룹에서 돌려야 함.
-                    for (var lp3 = 0; lp3 < nowListForm.length; lp3++) {
-                        for (var lp4 = 0; lp4 < nowListForm[lp3].length; lp4++) {
-                            if (nowListForm[lp3][lp4] == shuffleListParam[lp2]) {
-                                nowGroup = lp3;
-                            }
-                        }
+                    let memberIndexRemainder = twoArrayRemainderIndex(nowHistory[shuffleListParam[lp2]]);
+                    
+                    let nowGroup = findNowGroup(nowList, shuffleListParam[lp2]);
+                    let groupIndexPick = randomIntMax(memberIndexRemainder.length);
+                    while(groupIndexPick == nowGroup){
+                        groupIndexPick = randomIntMax(memberIndexRemainder.length);
                     }
-
-                    let twoArrayRandomIndexPick = randomIntMax(memberHistory[0].length);
-                    let twoArrayRandomPick = memberHistory[0][twoArrayRandomIndexPick];
-                    // TODO shuffleListForm = 
+                    //현재의 그룹을 제외한 다른 곳에 들어가야함
+                    let twoArrayRandomIndexPick = randomIntMax(memberIndexRemainder[groupIndexPick].length);
+                    let twoArrayRandomPick = memberIndexRemainder[groupIndexPick][twoArrayRandomIndexPick];
+                    shuffleListForm[groupIndexPick][twoArrayRandomPick] = shuffleListParam[lp2];
+                    shuffleFromHistoryIndex[groupIndexPick][twoArrayRandomPick] = false;
                 }
-
-                // 할당된 상태를 for문을 돌면서 히스토리에 각각 기록
-                for (var lp1 = 0; lp1 < 배열마친리스트.length; lp1++) {
-
-                    // shuffle을 마치고 현재 할당된 상태를 historyObj에 반영
-                    itemHistory(nowHistory, 배열마친리스트[lp1], itemHistoryGroupValue, itemHistoryPlaceValue);
-                }
+                listItemHistory(nowHistory, shuffleListForm);
             }
         }
 
-        nowList = changeFormToList(shuffleList);
-        return shuffleList;
+        nowList = changeFormToList(shuffleListForm);
+        return nowList;
     };
     // ------------------------셔플 관련 함수-------------------------------
 
@@ -386,23 +392,13 @@ $(document).ready(function () {
     }
 
     /* 
-        @param initList 초기 list
-        @param initGroups 초기 그룹 수
-
-        초기 세팅이 되는 부분
-    */
-    const createInit = function (initList, initGroups) {
-        historyObject = groupObjCreate(initList, initGroups);
-        nowList = initList;
-    };
-
-    /* 
-        초기화를 하고 처음 섞어서(shuffle) 기록(itemHistory) 후
-        
-        renderList
+    초기화를 하고 처음 섞어서(shuffle) 기록(itemHistory) 후
+    
+    renderList
     */
     $("#setSeat").on("click", function () {
-        createInit(originList, 3);
+        historyObject = groupObjCreate(originList, 3);
+        nowList = originList
         var nowRenderList = shuffle(historyObject, nowList, 3);
         renderList(nowRenderList);
     });
