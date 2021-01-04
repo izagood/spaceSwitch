@@ -307,6 +307,12 @@ $(document).ready(function () {
         return findNowGroupNum;
     }
 
+    const inOutTrue = function(innerHistory, outterHistory){
+        let inOutTrueArray = [];
+
+        return inOutTrueArray;
+    };
+
     /* 
         @param shuffleListParam list형태 
         @param shuffleGroupParam 그룹 수 
