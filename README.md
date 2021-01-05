@@ -1,4 +1,4 @@
-# spaceSwitech
+# spaceSwitch
 
 # 요건
 ## 12명의 자리를 배치
