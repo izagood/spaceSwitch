@@ -329,6 +329,32 @@ $(document).ready(function () {
         return inOutTrue1Array;
     };
 
+    const inOutTrueRemainderGroup = function (inOutTrueArray) {
+        let inOutTrue1GroupArray = [];
+
+        for (var lp1 = 0; lp1 < inOutTrueArray.length; lp1++) {
+            if (inOutTrueArray[lp1].length !== 0) {
+                inOutTrue1GroupArray.push(lp1);
+            }
+        }
+
+        return inOutTrue1GroupArray;
+    };
+
+    const inOutTrueAllNullCheck = function (inOutTrue1History) {
+        let inOutTrueAllNull = false;
+        var count1 = 0;
+        for (var lp1 = 0; lp1 < inOutTrue1History.length; lp1++) {
+            if (inOutTrue1History[lp1].length === 0) {
+                count1++;
+            }
+        }
+        if (count1 == inOutTrue1History.length) {
+            inOutTrueAllNull = true;
+        }
+        return inOutTrueAllNull;
+    };
+
     /* 
         @param shuffleListParam list형태 
         @param shuffleGroupParam 그룹 수 
@@ -380,43 +406,83 @@ $(document).ready(function () {
                 for (var lp1 = 0; lp1 < shuffleListParam.length; lp1++) {
 
                     // 내부 외부 히스토리 공통적으로 남은거
+                    console.log('-------------시작----------------')
+                    console.log('shuffleListParam[lp1]', shuffleListParam[lp1])
+                    console.log('innerHistoryIndex', innerHistoryIndex)
+                    console.log('historyParam[shuffleListParam[lp1]]', historyParam[shuffleListParam[lp1]])
                     innerOutterHistoryIndexRemainder = inOutTrueRemainder(historyParam[shuffleListParam[lp1]], innerHistoryIndex);
-                    // 외부 히스토리 남은거
-                    outterHistoryIndexRemainder = twoArrayRemainderIndex(historyParam[shuffleListParam[lp1]]);
+                    console.log('innerOutterHistoryIndexRemainder', innerOutterHistoryIndexRemainder)
+                    var booleanCheck = inOutTrueAllNullCheck(innerOutterHistoryIndexRemainder)
+                    console.log('booleanCheck', booleanCheck)
+                    // 모두 비어있지 않을때 
+                    if (inOutTrueAllNullCheck(innerOutterHistoryIndexRemainder) == false) {
+                        console.log('if로 들어왔다')
+                        // 가능 그룹
+                        // 오류 나는 지금 들어갈 수 있는 그룹이 원래 있던 그룹 밖에 없어서 해당 그룹을 제외하기 때문에 할당될 수가 없음.
+                        let remainderGroup = inOutTrueRemainderGroup(innerOutterHistoryIndexRemainder);
+                        let nowGroup = findNowGroup(nowList, shuffleListParam[lp1]);
+                        console.log('nowGroup', nowGroup)
+                        // 문제 2
+                        // 남아있는 그룹이 1개이고 그 1개가 nowGroup과 같을때 들어감
+                        if (remainderGroup.length === 1 && remainderGroup[0] == nowGroup) {
+                            let groupIndexPick = nowGroup;
 
-                    let nowGroup = findNowGroup(nowList, shuffleListParam[lp1]);
-                    let groupIndexPick = randomIntMax(outterHistoryIndexRemainder.length);
-                    while (groupIndexPick == nowGroup) {
-                        groupIndexPick = randomIntMax(outterHistoryIndexRemainder.length);
-                    }
-                    //현재의 그룹을 제외한 다른 곳에 들어가야함
-                    // 외부 히스토리는 만족하고 있지만 내부 히스토리가 불만족.
-                    // 내부 히스토리에 값이 있는 경우 다시 한번 픽하는 알고리즘 필요
-                    // 랜덤으로 했을때 10번 이상 안 들어가면 수동으로 들어가게 해야할듯
-                    let twoArrayRandomIndexPick = randomIntMax(outterHistoryIndexRemainder[groupIndexPick].length);
-                    // console.log('twoArrayRandomIndexPick', twoArrayRandomIndexPick);
-                    let twoArrayRandomPick = outterHistoryIndexRemainder[groupIndexPick][twoArrayRandomIndexPick];
-                    // console.log('twoArrayRandomPick', twoArrayRandomPick);
-                    // 내부 히스토리 == shuffleFromHistoryIndex
-                    if (innerHistoryIndex[groupIndexPick][twoArrayRandomPick] == true) {
-                        innerShuffleListForm[groupIndexPick][twoArrayRandomPick] = shuffleListParam[lp1];
-                        innerHistoryIndex[groupIndexPick][twoArrayRandomPick] = false;
-                        // console.log('innerHistoryIndex', innerHistoryIndex);
-                    } else {
-                        // innerHistoryIndexRemainder 이너에도 남은거에서 순서로 돌려야함.
-                        // 외부 내부 둘 다 true 인것 찾아야함.
-                        // 위에서 true였지만 내부 히스토리에 false이기 때문에
-                        // 내부 히스토리만 true한다고 해서 외부가 false일 수 있음
-                        // 결국 공통으로 true인 경우를 골라 내는 함수가 필요함.
+                            let randomIndexPick = randomIntMax(innerOutterHistoryIndexRemainder[groupIndexPick].length);
+                            let randomIndexSelect = innerOutterHistoryIndexRemainder[groupIndexPick][randomIndexPick];
+                            // 내부 히스토리 == innerHistoryIndex
+                            if (innerHistoryIndex[groupIndexPick][randomIndexSelect] == true) {
+                                console.log('값 넣음')
+                                innerShuffleListForm[groupIndexPick][randomIndexSelect] = shuffleListParam[lp1];
+                                innerHistoryIndex[groupIndexPick][randomIndexSelect] = false;
+                                // console.log('innerHistoryIndex', innerHistoryIndex);
+                            } else { // TODO 여기는 공통으로 빈 곳이 있는데 해당하는 곳에 이미 할당이 되어 있음.
+                                console.log('문제 1로 빠짐')
+                                // 문제 1
+                                for (var lp2 = 0; lp2 < innerHistoryIndex[groupIndexPick].length; lp2++) {
+                                    if (innerHistoryIndex[groupIndexPick][lp2] == true &&
+                                        innerOutterHistoryIndexRemainder[groupIndexPick][lp2] == true) {
+                                            innerShuffleListForm[groupIndexPick][randomIndexSelect] = shuffleListParam[lp1];
+                                            innerHistoryIndex[groupIndexPick][lp2] = false;
+                                            break;
+                                    }
+                                }
+                            }
+                            console.log('innerShuffleListForm', innerShuffleListForm)
+                        } else {
+
+                            let groupIndexPick = randomIntMax(innerOutterHistoryIndexRemainder.length);
+                            console.log('groupIndexPick', groupIndexPick)
+                            while (groupIndexPick == nowGroup) {
+                                groupIndexPick = randomIntMax(innerOutterHistoryIndexRemainder.length);
+                                console.log('groupIndexPick', groupIndexPick)
+                            }
+                            let randomIndexPick = randomIntMax(innerOutterHistoryIndexRemainder[groupIndexPick].length);
+                            let randomIndexSelect = innerOutterHistoryIndexRemainder[groupIndexPick][randomIndexPick];
+                            // 내부 히스토리 == innerHistoryIndex
+                            if (innerHistoryIndex[groupIndexPick][randomIndexSelect] == true) {
+                                console.log('값 넣음')
+                                innerShuffleListForm[groupIndexPick][randomIndexSelect] = shuffleListParam[lp1];
+                                innerHistoryIndex[groupIndexPick][randomIndexSelect] = false;
+                                // console.log('innerHistoryIndex', innerHistoryIndex);
+                            } else { // TODO 여기는 공통으로 빈 곳이 있는데 해당하는 곳에 이미 할당이 되어 있음.
+                                // 문제점 1 해결
+                            }
+                            console.log('innerShuffleListForm', innerShuffleListForm)
+                        }
+                    } else { // TODO 공통으로 비어있는 곳이 없어서 외부 히스토리를 기준으로 비어있는 곳에 들어가야함.
                         console.log('else로 들어왔다')
+                        console.log('innerShuffleListForm', innerShuffleListForm)
+
+                        // 외부 히스토리 남은거
+                        outterHistoryIndexRemainder = twoArrayRemainderIndex(historyParam[shuffleListParam[lp1]]);
                         innerHistoryIndexRemainder = twoArrayRemainderIndex(innerHistoryIndex);
                         for (var lp2 = 0; lp2 < innerHistoryIndexRemainder[groupIndexPick].length; lp2++) {
                             innerShuffleListForm[groupIndexPick][lp2] = shuffleListParam[lp1];
                             innerHistoryIndex[groupIndexPick][lp2] = false;
                         }
-
                     }
                 }
+                console.log(historyObject)
                 listItemHistory(historyParam, innerShuffleListForm);
             }
         }
@@ -457,6 +523,5 @@ $(document).ready(function () {
     $("#randomSeat").on("click", function () {
         var nowRenderList = shuffle(historyObject, nowList, 3);
         renderList(nowRenderList);
-        console.log('historyObject', historyObject)
     });
 });
