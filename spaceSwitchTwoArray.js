@@ -38,7 +38,7 @@ $(document).ready(function () {
     ];
     let nowList = [];
     let historyObject = {};
-    let shuffleCount = 0;
+    let shuffleCount = 1;
 
     /* 
         @param membersList 맴버 수
@@ -276,13 +276,13 @@ $(document).ready(function () {
         return noLimitRandom;
     }
 
-    const twoArrayRemainderIndex = function (twoArrayIndexList) {
+    const twoArrayRemainderIndex = function (twoArrayIndexFormList) {
         let remain1Array = [];
         let remain2Array = [];
 
-        for (var lp1 = 0; lp1 < twoArrayIndexList.length; lp1++) {
-            for (var lp2 = 0; lp2 < twoArrayIndexList[lp1].length; lp2++) {
-                if (twoArrayIndexList[lp1][lp2] == true) {
+        for (var lp1 = 0; lp1 < twoArrayIndexFormList.length; lp1++) {
+            for (var lp2 = 0; lp2 < twoArrayIndexFormList[lp1].length; lp2++) {
+                if (twoArrayIndexFormList[lp1][lp2] == true) {
                     remain2Array.push(lp2);
                 }
             }
@@ -293,10 +293,10 @@ $(document).ready(function () {
         return remain1Array;
     };
 
-    const findNowGroup = function (findNowGroupList, findNowGroupMemberName) {
+    const findNowGroup = function (findNowGroupList, findNowGroupMemberName, findNowGroupGroups) {
         let findNowGroupNum = 0;
 
-        let findNowListForm = changeListToForm(findNowGroupList, 3);
+        let findNowListForm = changeListToForm(findNowGroupList, findNowGroupGroups);
         // nowList에서 현재의 그룹을 찾고 이외의 그룹에서 돌려야 함.
         for (var lp1 = 0; lp1 < findNowListForm.length; lp1++) {
             for (var lp2 = 0; lp2 < findNowListForm[lp1].length; lp2++) {
@@ -313,18 +313,46 @@ $(document).ready(function () {
 
         inner outter 둘 다 true를 반환
     */
-    const inOutTrueRemainder = function (outterHistory, innerHistory) {
+    const inOutTrueRemainder = function (outterHistory1, innerHistory1) {
+        let inOutTrue11Array = [];
+        let inOutTrue21Array = [];
+
+        for (var lp1 = 0; lp1 < outterHistory1.length; lp1++) {
+            for (var lp2 = 0; lp2 < outterHistory1[lp1].length; lp2++) {
+                if (outterHistory1[lp1][lp2] == true && innerHistory1[lp1][lp2] == true) {
+                    inOutTrue21Array.push(lp2);
+                }
+            }
+            inOutTrue11Array.push(inOutTrue21Array);
+            inOutTrue21Array = [];
+        }
+
+        return inOutTrue11Array;
+    };
+
+    /* 
+        외부 히스토리 true
+        내부 히스토리 true
+        현재 그룹 아님
+
+        3가지 조건 모두 만족하는 리스트
+    */
+    const inOutOtherGroupRemainder = function (outterHistory, innerHistory, nowGroupNum) {
         let inOutTrue1Array = [];
         let inOutTrue2Array = [];
 
         for (var lp1 = 0; lp1 < outterHistory.length; lp1++) {
-            for (var lp2 = 0; lp2 < outterHistory[lp1].length; lp2++) {
-                if (outterHistory[lp1][lp2] == true && innerHistory[lp1][lp2] == true) {
-                    inOutTrue2Array.push(lp2);
+            if (nowGroupNum == lp1) {
+                inOutTrue1Array.push(inOutTrue2Array);
+            } else {
+                for (var lp2 = 0; lp2 < outterHistory[lp1].length; lp2++) {
+                    if (outterHistory[lp1][lp2] == true && innerHistory[lp1][lp2] == true) {
+                        inOutTrue2Array.push(lp2);
+                    }
                 }
+                inOutTrue1Array.push(inOutTrue2Array);
+                inOutTrue2Array = [];
             }
-            inOutTrue1Array.push(inOutTrue2Array);
-            inOutTrue2Array = [];
         }
 
         return inOutTrue1Array;
@@ -371,7 +399,7 @@ $(document).ready(function () {
         근데 이게 shuffle을 돌릴 때 히스토리를 조사해서 돌린 최종 list가 나와야함.
     */
     const shuffle = function (historyParam, shuffleListParam, shuffleGroupParam) {
-        // shuffle에서 할당 유무를 판단하는 template, 외부 history
+        // 외부 history
         let outterHistoryIndexRemainder = [];
         // 내부 히스토리
         let innerHistoryIndex = templateCreate(shuffleListParam, shuffleGroupParam);
@@ -386,7 +414,7 @@ $(document).ready(function () {
         if (allHistoryCheck(historyParam, shuffleListParam, true) == true) {
             // 랜덤으로 돌리고 배정해줘야 함.
             innerShuffleList = noLimitRandomList(originList);
-            innerShuffleListForm = changeListToForm(innerShuffleList, 3);
+            innerShuffleListForm = changeListToForm(innerShuffleList, shuffleGroupParam);
 
             //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
             listItemHistory(historyParam, innerShuffleListForm);
@@ -397,7 +425,7 @@ $(document).ready(function () {
                 historyObject = groupObjCreate(shuffleListParam, shuffleGroupParam);
                 // 랜덤 배정 후 히스토리 기록을 위해 formatting
                 innerShuffleList = noLimitRandomList(originList);
-                innerShuffleListForm = changeListToForm(innerShuffleList, 3);
+                innerShuffleListForm = changeListToForm(innerShuffleList, shuffleGroupParam);
                 //shuffleList에 지금 할당된걸 historyObject에 기록해야 함.
                 listItemHistory(historyParam, innerShuffleListForm);
 
@@ -412,18 +440,48 @@ $(document).ready(function () {
                     2. 내부 & 외부 히스토리에서 동시에 가능한 곳으로 간다.
                     3. 마지막 순서에는 들어갈 곳이 1곳 밖에 남지 않아서 자동으로 들어간다.
 
-                    
+
                     count1 이 12번째에는 외부 히스토리를 보면 들어갈 수 있는 곳이 다들 1곳 밖에없음
                     그래서 횟수를 카운트 해줌.
                     일반적으로 사용할 수 있으려면 맴버의 수 만큼 카운트하게 해야함.
                 */
-                
-                // 각 사람별 가능한거 뽑아서 남은 자리에 배정
-                for (var lp1 = 0; lp1 < shuffleListParam.length; lp1++) {
+                //마지막 순서일때 판단.
+                if (shuffleCount < nowList.length) {
+                    // 각 사람별 가능한거 뽑아서 남은 자리에 배정
+                    for (var lp1 = 0; lp1 < shuffleListParam.length; lp1++) {
+                        // shuffleListParam[lp1] 리스트에서 순서대로 이름 추출
+                        // historyParam[shuffleListParam[lp1]] 2차원 배열 외부 히스토리
 
+                        // 1단계 && 2단계
+                        // 이전 그룹 X && 내부 히스토리 true && 외부 히스토리 true => 조건 만족해야함.
+                        // 바로 직전에 쌓인것 까지 모두 포함하는 히스토리
+                        // 위 조건을 만족하면 그것에 중복이 존재 할 수가 없음
+                        let nowGroup = findNowGroup(nowList, shuffleListParam[lp1], shuffleGroupParam);
+                        let inOutGroupFormList = inOutOtherGroupRemainder(historyParam[shuffleListParam[lp1]], innerHistoryIndex, nowGroup);
+                        let randomGroupPick = randomIntMax(inOutGroupFormList.length);
+                        let randomPlacePick = randomIntMax(inOutGroupFormList[randomGroupPick].length);
+
+                        innerShuffleListForm[randomGroupPick][randomPlacePick] = shuffleListParam[lp1];
+                        innerHistoryIndex[randomGroupPick][randomPlacePick] = false;
+
+                        shuffleCount++;
+                    }
+                } else {
+                    // 3단계
+                    for (var lp2 = 0; lp2 < shuffleListParam.length; lp2++) {
+                        // 돌면서 외부 히스토리에서 남은 가능한 자리에 넣어주면 됨
+                        // historyParam[shuffleListParam[lp2]] 2차원 배열 외부 히스토리
+                        for (var lp3 = 0; lp3 < historyParam[shuffleListParam[lp2]].length; lp3++) {
+                            for (var lp4 = 0; lp4 < historyParam[shuffleListParam[lp2]][lp3].length; lp4++) {
+                                if (historyParam[shuffleListParam[lp2]][lp3][lp4] == true) {
+                                    innerShuffleListForm[lp3][lp4] = shuffleListParam[lp2];
+                                    innerHistoryIndex[lp3][lp4] = false;
+                                }
+                            }
+                        }
+                    }
+                    shuffleCount = 1;
                 }
-                console.log(historyObject)
-                listItemHistory(historyParam, innerShuffleListForm);
             }
         }
 
