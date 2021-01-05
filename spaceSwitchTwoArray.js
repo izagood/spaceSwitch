@@ -343,7 +343,7 @@ $(document).ready(function () {
 
         for (var lp1 = 0; lp1 < outterHistory.length; lp1++) {
             if (nowGroupNum == lp1) {
-                inOutTrue1Array.push(inOutTrue2Array);
+                inOutTrue1Array.push([]);
             } else {
                 for (var lp2 = 0; lp2 < outterHistory[lp1].length; lp2++) {
                     if (outterHistory[lp1][lp2] == true && innerHistory[lp1][lp2] == true) {
@@ -352,6 +352,26 @@ $(document).ready(function () {
                 }
                 inOutTrue1Array.push(inOutTrue2Array);
                 inOutTrue2Array = [];
+            }
+        }
+
+        return inOutTrue1Array;
+    };
+    const inOutNowGroupRemainder = function (outterHistory, innerHistory, nowGroupNum) {
+        let inOutTrue1Array = [];
+        let inOutTrue2Array = [];
+
+        for (var lp1 = 0; lp1 < outterHistory.length; lp1++) {
+            if (nowGroupNum == lp1) {
+                for (var lp2 = 0; lp2 < outterHistory[lp1].length; lp2++) {
+                    if (outterHistory[lp1][lp2] == true && innerHistory[lp1][lp2] == true) {
+                        inOutTrue2Array.push(lp2);
+                    }
+                }
+                inOutTrue1Array.push(inOutTrue2Array);
+                inOutTrue2Array = [];
+            } else {
+                inOutTrue1Array.push([]);
             }
         }
 
@@ -431,22 +451,23 @@ $(document).ready(function () {
 
             } else { // true, false 섞여있을때
                 /* 
-                    전제 - 앞 순서에서 자리를 고르면 내부 히스토리가 쌓이고
-                           앞 순서의 내부 히스토리가 쌓인 상태에서 이전 그룹이 아닌 동시에
-                           외부 히스토리와 내부 히스토리를 비교하여 할당 가능한 곳에 넣어준다.
+                전제 - 앞 순서에서 자리를 고르면 내부 히스토리가 쌓이고
+                앞 순서의 내부 히스토리가 쌓인 상태에서 이전 그룹이 아닌 동시에
+                외부 히스토리와 내부 히스토리를 비교하여 할당 가능한 곳에 넣어준다.
                 
-                    여기의 알고리즘 순서   
-                    1. 일단 이전 그룹이외의 그룹에 들어간다.
-                    2. 내부 & 외부 히스토리에서 동시에 가능한 곳으로 간다.
-                    3. 마지막 순서에는 들어갈 곳이 1곳 밖에 남지 않아서 자동으로 들어간다.
-
-
-                    count1 이 12번째에는 외부 히스토리를 보면 들어갈 수 있는 곳이 다들 1곳 밖에없음
-                    그래서 횟수를 카운트 해줌.
-                    일반적으로 사용할 수 있으려면 맴버의 수 만큼 카운트하게 해야함.
+                여기의 알고리즘 순서   
+                1. 일단 이전 그룹이외의 그룹에 들어간다.
+                2. 내부 & 외부 히스토리에서 동시에 가능한 곳으로 간다.
+                3. 마지막 순서에는 들어갈 곳이 1곳 밖에 남지 않아서 자동으로 들어간다.
+                
+                
+                count1 이 12번째에는 외부 히스토리를 보면 들어갈 수 있는 곳이 다들 1곳 밖에없음
+                그래서 횟수를 카운트 해줌.
+                일반적으로 사용할 수 있으려면 맴버의 수 만큼 카운트하게 해야함.
                 */
                 //마지막 순서일때 판단.
                 if (shuffleCount < nowList.length) {
+                    console.log('shuffleCount < nowList.length 진입')
                     // 각 사람별 가능한거 뽑아서 남은 자리에 배정
                     for (var lp1 = 0; lp1 < shuffleListParam.length; lp1++) {
                         // shuffleListParam[lp1] 리스트에서 순서대로 이름 추출
@@ -456,17 +477,54 @@ $(document).ready(function () {
                         // 이전 그룹 X && 내부 히스토리 true && 외부 히스토리 true => 조건 만족해야함.
                         // 바로 직전에 쌓인것 까지 모두 포함하는 히스토리
                         // 위 조건을 만족하면 그것에 중복이 존재 할 수가 없음
+                        console.log('--------------시작----------------')
+                        console.log('shuffleListParam[lp1]', shuffleListParam[lp1])
                         let nowGroup = findNowGroup(nowList, shuffleListParam[lp1], shuffleGroupParam);
+                        console.log('nowGroup', nowGroup)
                         let inOutGroupFormList = inOutOtherGroupRemainder(historyParam[shuffleListParam[lp1]], innerHistoryIndex, nowGroup);
-                        let randomGroupPick = randomIntMax(inOutGroupFormList.length);
-                        let randomPlacePick = randomIntMax(inOutGroupFormList[randomGroupPick].length);
+                        console.log('inOutGroupFormList', inOutGroupFormList)
+                        let groupPickParam = inOutTrueRemainderGroup(inOutGroupFormList);
+                        console.log('groupPickParam', groupPickParam)
+                        console.log('groupPickParam.length', groupPickParam.length)
+                        if (groupPickParam.length !== 0) {
+                            
+                            // 랜덤 픽 할때 있는 애만 골라야 함
+                            
+                            let randomGroupPick = groupPickParam[randomIntMax(groupPickParam.length)];
+                            console.log('randomGroupPick', randomGroupPick)
+                            // 랜덤 픽 할때
+                            let randomPlacePick = inOutGroupFormList[randomGroupPick][randomIntMax(inOutGroupFormList[randomGroupPick].length)];
+                            console.log('randomPlacePick', randomPlacePick)
+                            
+                            innerShuffleListForm[randomGroupPick][randomPlacePick] = shuffleListParam[lp1];
+                            console.log('innerShuffleListForm[randomGroupPick][randomPlacePick]', innerShuffleListForm[randomGroupPick][randomPlacePick])
+                            innerHistoryIndex[randomGroupPick][randomPlacePick] = false;
+                            console.log('innerHistoryIndex[randomGroupPick][randomPlacePick]', innerHistoryIndex[randomGroupPick][randomPlacePick])
+                        } else {
+                            // 여기 남아있는 애가 없어
+                            
+                            let inOutNowGroupFormList = inOutNowGroupRemainder(historyParam[shuffleListParam[lp1]], innerHistoryIndex, nowGroup);
+                            console.log('inOutNowGroupFormList', inOutNowGroupFormList)
+                            let randomPlacePick = inOutNowGroupFormList[nowGroup][randomIntMax(inOutNowGroupFormList[nowGroup].length)];
+                            console.log('randomPlacePick', randomPlacePick)
 
-                        innerShuffleListForm[randomGroupPick][randomPlacePick] = shuffleListParam[lp1];
-                        innerHistoryIndex[randomGroupPick][randomPlacePick] = false;
+                            innerShuffleListForm[nowGroup][randomPlacePick] = shuffleListParam[lp1];
+                            console.log('innerShuffleListForm[nowGroup][randomPlacePick]', innerShuffleListForm[nowGroup][randomPlacePick])
+                            innerHistoryIndex[nowGroup][randomPlacePick] = false;
+                            console.log('innerHistoryIndex[nowGroup][randomPlacePick]', innerHistoryIndex[nowGroup][randomPlacePick])
+                            // 현재 그룹에 들어가야할 곳이 남아있다.
 
-                        shuffleCount++;
+                        }
+
+
                     }
+                    // 일단 아직 외부 히스토리에 등록 안 하고 있음.
+                    listItemHistory(historyParam, innerShuffleListForm);
+                    console.log('historyParam', historyParam)
+                    shuffleCount++;
+                    console.log('shuffleCount', shuffleCount)
                 } else {
+                    console.log('else 진입')
                     // 3단계
                     for (var lp2 = 0; lp2 < shuffleListParam.length; lp2++) {
                         // 돌면서 외부 히스토리에서 남은 가능한 자리에 넣어주면 됨
@@ -485,6 +543,7 @@ $(document).ready(function () {
             }
         }
 
+        console.log('innerShuffleListForm', innerShuffleListForm)
         nowList = changeFormToList(innerShuffleListForm);
         return nowList;
     };
