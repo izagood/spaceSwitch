@@ -446,9 +446,11 @@ $(document).ready(function () {
                 일반적으로 사용할 수 있으려면 맴버의 수 만큼 카운트하게 해야함.
                 */
                 //마지막 순서일때 판단.
+                let randomGroupPick;
                 if (shuffleCount < nowList.length) {
                     console.log('shuffleCount < nowList.length 진입')
                     // 각 사람별 가능한거 뽑아서 남은 자리에 배정
+                    var groupchangeCount = 0;
                     for (var lp1 = 0; lp1 < shuffleListParam.length; lp1++) {
                         // shuffleListParam[lp1] 리스트에서 순서대로 이름 추출
                         // historyParam[shuffleListParam[lp1]] 2차원 배열 외부 히스토리
@@ -465,11 +467,11 @@ $(document).ready(function () {
                         console.log('inOutGroupFormList', inOutGroupFormList)
                         let groupPickParam = inOutTrueRemainderGroup(inOutGroupFormList);
                         console.log('groupPickParam', groupPickParam)
-                        console.log('groupPickParam.length', groupPickParam.length)
 
                         // 랜덤 픽 할때 있는 애만 골라야 함
-
-                        let randomGroupPick = groupPickParam[randomIntMax(groupPickParam.length)];
+                        if(groupchangeCount % 4 === 0 ){
+                            randomGroupPick = groupPickParam[randomIntMax(groupPickParam.length)];
+                        }
                         console.log('randomGroupPick', randomGroupPick)
                         // 랜덤 픽 할때
                         let randomPlacePick = inOutGroupFormList[randomGroupPick][randomIntMax(inOutGroupFormList[randomGroupPick].length)];
@@ -479,7 +481,7 @@ $(document).ready(function () {
                         console.log('innerShuffleListForm[randomGroupPick][randomPlacePick]', innerShuffleListForm[randomGroupPick][randomPlacePick])
                         innerHistoryIndex[randomGroupPick][randomPlacePick] = false;
                         console.log('innerHistoryIndex[randomGroupPick][randomPlacePick]', innerHistoryIndex[randomGroupPick][randomPlacePick])
-
+                        groupchangeCount++;
                     }
                     // 일단 아직 외부 히스토리에 등록 안 하고 있음.
                     listItemHistory(historyParam, innerShuffleListForm);
