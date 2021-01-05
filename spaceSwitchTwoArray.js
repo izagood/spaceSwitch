@@ -357,26 +357,6 @@ $(document).ready(function () {
 
         return inOutTrue1Array;
     };
-    const inOutNowGroupRemainder = function (outterHistory, innerHistory, nowGroupNum) {
-        let inOutTrue1Array = [];
-        let inOutTrue2Array = [];
-
-        for (var lp1 = 0; lp1 < outterHistory.length; lp1++) {
-            if (nowGroupNum == lp1) {
-                for (var lp2 = 0; lp2 < outterHistory[lp1].length; lp2++) {
-                    if (outterHistory[lp1][lp2] == true && innerHistory[lp1][lp2] == true) {
-                        inOutTrue2Array.push(lp2);
-                    }
-                }
-                inOutTrue1Array.push(inOutTrue2Array);
-                inOutTrue2Array = [];
-            } else {
-                inOutTrue1Array.push([]);
-            }
-        }
-
-        return inOutTrue1Array;
-    };
 
     const inOutTrueRemainderGroup = function (inOutTrueArray) {
         let inOutTrue1GroupArray = [];
@@ -486,36 +466,19 @@ $(document).ready(function () {
                         let groupPickParam = inOutTrueRemainderGroup(inOutGroupFormList);
                         console.log('groupPickParam', groupPickParam)
                         console.log('groupPickParam.length', groupPickParam.length)
-                        if (groupPickParam.length !== 0) {
-                            
-                            // 랜덤 픽 할때 있는 애만 골라야 함
-                            
-                            let randomGroupPick = groupPickParam[randomIntMax(groupPickParam.length)];
-                            console.log('randomGroupPick', randomGroupPick)
-                            // 랜덤 픽 할때
-                            let randomPlacePick = inOutGroupFormList[randomGroupPick][randomIntMax(inOutGroupFormList[randomGroupPick].length)];
-                            console.log('randomPlacePick', randomPlacePick)
-                            
-                            innerShuffleListForm[randomGroupPick][randomPlacePick] = shuffleListParam[lp1];
-                            console.log('innerShuffleListForm[randomGroupPick][randomPlacePick]', innerShuffleListForm[randomGroupPick][randomPlacePick])
-                            innerHistoryIndex[randomGroupPick][randomPlacePick] = false;
-                            console.log('innerHistoryIndex[randomGroupPick][randomPlacePick]', innerHistoryIndex[randomGroupPick][randomPlacePick])
-                        } else {
-                            // 여기 남아있는 애가 없어
-                            
-                            let inOutNowGroupFormList = inOutNowGroupRemainder(historyParam[shuffleListParam[lp1]], innerHistoryIndex, nowGroup);
-                            console.log('inOutNowGroupFormList', inOutNowGroupFormList)
-                            let randomPlacePick = inOutNowGroupFormList[nowGroup][randomIntMax(inOutNowGroupFormList[nowGroup].length)];
-                            console.log('randomPlacePick', randomPlacePick)
 
-                            innerShuffleListForm[nowGroup][randomPlacePick] = shuffleListParam[lp1];
-                            console.log('innerShuffleListForm[nowGroup][randomPlacePick]', innerShuffleListForm[nowGroup][randomPlacePick])
-                            innerHistoryIndex[nowGroup][randomPlacePick] = false;
-                            console.log('innerHistoryIndex[nowGroup][randomPlacePick]', innerHistoryIndex[nowGroup][randomPlacePick])
-                            // 현재 그룹에 들어가야할 곳이 남아있다.
+                        // 랜덤 픽 할때 있는 애만 골라야 함
 
-                        }
+                        let randomGroupPick = groupPickParam[randomIntMax(groupPickParam.length)];
+                        console.log('randomGroupPick', randomGroupPick)
+                        // 랜덤 픽 할때
+                        let randomPlacePick = inOutGroupFormList[randomGroupPick][randomIntMax(inOutGroupFormList[randomGroupPick].length)];
+                        console.log('randomPlacePick', randomPlacePick)
 
+                        innerShuffleListForm[randomGroupPick][randomPlacePick] = shuffleListParam[lp1];
+                        console.log('innerShuffleListForm[randomGroupPick][randomPlacePick]', innerShuffleListForm[randomGroupPick][randomPlacePick])
+                        innerHistoryIndex[randomGroupPick][randomPlacePick] = false;
+                        console.log('innerHistoryIndex[randomGroupPick][randomPlacePick]', innerHistoryIndex[randomGroupPick][randomPlacePick])
 
                     }
                     // 일단 아직 외부 히스토리에 등록 안 하고 있음.
