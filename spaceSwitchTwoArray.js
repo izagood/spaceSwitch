@@ -481,9 +481,7 @@ $(document).ready(function () {
                 1. inOutOtherGroup 함수로 돌린다.
                 2. inOutOtherGroup == [[],[],[]] 인데 innerHistoryCheck(innerHistory, false) != false가 나와
                 false가 나온다는 이유는 모두 false가 아니라는 소리임
-                3. 그럼 inOut만 돌려서 현재 group에 들어갈 수 있는지 체크
-                4. 만약 현재 group의 innerHistory에 남은 자리에 A가 들어갈 수 없음
-                5. A가 들어갈 수 있는 자리에 들어가고(outGroup) 그 자리에 배정되었던
+                3. A가 들어갈 수 있는 자리에 들어가고(outGroup) 그 자리에 배정되었던
                 B를 inOutGroup을 먼저 실행해보고 들어갈 수 없으면
                 outGroup으로 배정한다.
                 while(!innerHistoryCheck(innerHistory, false)){
