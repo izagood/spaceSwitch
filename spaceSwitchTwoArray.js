@@ -209,17 +209,10 @@ $(document).ready(function () {
     const allHistoryCheck = function (checkObj, checkList, checkBoolean) {
         let allFlag = true;
 
-        // boolean이 하나라도 있는지 체크해야 하므로 입력 값과 반대로 바꿔줘야 한다.
-        if (checkBoolean == true) {
-            checkBoolean = false;
-        } else {
-            checkBoolean = true;
-        }
-
         for (var lp1 = 0; lp1 < checkList.length; lp1++) {
             for (var lp2 = 0; lp2 < checkObj[checkList[lp1]].length; lp2++) {
                 for (var lp3 = 0; lp3 < checkObj[checkList[lp1]][lp2].length; lp3++) {
-                    if (checkObj[checkList[lp1]][lp2][lp3] == checkBoolean) {
+                    if (checkObj[checkList[lp1]][lp2][lp3] != checkBoolean) {
                         allFlag = false;
                     }
                 }
@@ -227,6 +220,20 @@ $(document).ready(function () {
         }
 
         return allFlag;
+    };
+
+    const innerHistoryCheck = function (checkList, checkBoolean) {
+        let innnerFlag = true;
+
+        for (var lp1 = 0; lp1 < checkList.length; lp1++) {
+            for (var lp2 = 0; lp2 < checkList[lp1].length; lp2++) {
+                if (checkList[lp1][lp2] != checkBoolean) {
+                    innnerFlag = false;
+                }
+            }
+        }
+
+        return innnerFlag;
     };
     // ------------------------히스토리 관련 함수-------------------------------
 
@@ -355,7 +362,32 @@ $(document).ready(function () {
             }
         }
 
+        // 이렇게 해서 나왔는데 
+
         return inOutTrue1Array;
+    };
+
+    const outOtherGroupRemainder = function (outterHistory, nowGroupNum) {
+        let outTrue1Array = [];
+        let outTrue2Array = [];
+
+        for (var lp1 = 0; lp1 < outterHistory.length; lp1++) {
+            if (nowGroupNum == lp1) {
+                outTrue1Array.push([]);
+            } else {
+                for (var lp2 = 0; lp2 < outterHistory[lp1].length; lp2++) {
+                    if (outterHistory[lp1][lp2] == true) {
+                        outTrue2Array.push(lp2);
+                    }
+                }
+                outTrue1Array.push(outTrue2Array);
+                outTrue2Array = [];
+            }
+        }
+
+        // 이렇게 해서 나왔는데 
+
+        return outTrue1Array;
     };
 
     const inOutTrueRemainderGroup = function (inOutTrueArray) {
@@ -399,16 +431,11 @@ $(document).ready(function () {
         근데 이게 shuffle을 돌릴 때 히스토리를 조사해서 돌린 최종 list가 나와야함.
     */
     const shuffle = function (historyParam, shuffleListParam, shuffleGroupParam) {
-        // 외부 history
-        let outterHistoryIndexRemainder = [];
         // 내부 히스토리
         let innerHistoryIndex = templateCreate(shuffleListParam, shuffleGroupParam);
-        let innerHistoryIndexRemainder = [];
         // 내부 리스트
         let innerShuffleList = [];
         let innerShuffleListForm = templateCreate(shuffleListParam, shuffleGroupParam);
-        // 내외부 공통 history
-        let innerOutterHistoryIndexRemainder = [];
 
         // 모두 true 일때
         if (allHistoryCheck(historyParam, shuffleListParam, true) == true) {
@@ -444,13 +471,35 @@ $(document).ready(function () {
                 count1 이 12번째에는 외부 히스토리를 보면 들어갈 수 있는 곳이 다들 1곳 밖에없음
                 그래서 횟수를 카운트 해줌.
                 일반적으로 사용할 수 있으려면 맴버의 수 만큼 카운트하게 해야함.
+
+
+                -------
+                알고리즘 개선
+                - 현재 에러가 발생하는 이유
+                현재 그룹을 배제했기 때문
+
+                1. inOutOtherGroup 함수로 돌린다.
+                2. inOutOtherGroup == [[],[],[]] 인데 innerHistoryCheck(innerHistory, false) != false가 나와
+                false가 나온다는 이유는 모두 false가 아니라는 소리임
+                3. 그럼 inOut만 돌려서 현재 group에 들어갈 수 있는지 체크
+                4. 만약 현재 group의 innerHistory에 남은 자리에 A가 들어갈 수 없음
+                5. A가 들어갈 수 있는 자리에 들어가고(outGroup) 그 자리에 배정되었던
+                B를 inOutGroup을 먼저 실행해보고 들어갈 수 없으면
+                outGroup으로 배정한다.
+                while(!innerHistoryCheck(innerHistory, false)){
+                    C를 inOutGroup을 먼저 실행해보고 들어갈 수 없으면
+                    outGroup으로 배정한다.
+                }
+
+                결과적으로는 innerHistory에 true로 되어있는 곳에 할당이 될 때까지 while을 돌꺼임
+
+                아마 true가 1,2 개 정도? 일듯함
+                -------
                 */
                 //마지막 순서일때 판단.
-                let randomGroupPick;
                 if (shuffleCount < nowList.length) {
                     console.log('shuffleCount < nowList.length 진입')
                     // 각 사람별 가능한거 뽑아서 남은 자리에 배정
-                    var groupchangeCount = 0;
                     for (var lp1 = 0; lp1 < shuffleListParam.length; lp1++) {
                         // shuffleListParam[lp1] 리스트에서 순서대로 이름 추출
                         // historyParam[shuffleListParam[lp1]] 2차원 배열 외부 히스토리
@@ -465,13 +514,12 @@ $(document).ready(function () {
                         console.log('nowGroup', nowGroup)
                         let inOutGroupFormList = inOutOtherGroupRemainder(historyParam[shuffleListParam[lp1]], innerHistoryIndex, nowGroup);
                         console.log('inOutGroupFormList', inOutGroupFormList)
+                        console.log('innerHistoryIndex', innerHistoryIndex)
                         let groupPickParam = inOutTrueRemainderGroup(inOutGroupFormList);
                         console.log('groupPickParam', groupPickParam)
 
                         // 랜덤 픽 할때 있는 애만 골라야 함
-                        if(groupchangeCount % 4 === 0 ){
-                            randomGroupPick = groupPickParam[randomIntMax(groupPickParam.length)];
-                        }
+                        let randomGroupPick = groupPickParam[randomIntMax(groupPickParam.length)];
                         console.log('randomGroupPick', randomGroupPick)
                         // 랜덤 픽 할때
                         let randomPlacePick = inOutGroupFormList[randomGroupPick][randomIntMax(inOutGroupFormList[randomGroupPick].length)];
@@ -481,7 +529,6 @@ $(document).ready(function () {
                         console.log('innerShuffleListForm[randomGroupPick][randomPlacePick]', innerShuffleListForm[randomGroupPick][randomPlacePick])
                         innerHistoryIndex[randomGroupPick][randomPlacePick] = false;
                         console.log('innerHistoryIndex[randomGroupPick][randomPlacePick]', innerHistoryIndex[randomGroupPick][randomPlacePick])
-                        groupchangeCount++;
                     }
                     // 일단 아직 외부 히스토리에 등록 안 하고 있음.
                     listItemHistory(historyParam, innerShuffleListForm);
