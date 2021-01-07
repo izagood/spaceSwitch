@@ -1,5 +1,4 @@
 /* 
-
 2차원 배열에 true로 할당하고
 ex) 3개 그룹 3명씩
 var array = 
@@ -30,16 +29,18 @@ array[2] 의 각 2차배열에 true가 있는지 체크하고
 
 $(document).ready(function () {
     const originList = ['권시연', '김예은', '김예진', '김재영', '노유림', '민지홍',
-        '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'];
+        '박윤재', '이소현', '이재빈', '이지현', '임정환', '정우리'
+    ];
     let nowList = [];
     let historyObject = {};
     let shuffleCount = 1;
 
+    // ------------------------형식(form) 관련 함수-------------------------------
     /* 
-        @param membersList 맴버 수
-        @param groups 그룹 수
-
-        맴버 수와 그룹 수에 맞게 2차 배열을 반환해준다.
+    @param membersList 맴버 수
+    @param groups 그룹 수
+    
+    맴버 수와 그룹 수에 맞게 2차 배열을 반환해준다.
     */
     const templateCreate = function (membersList, groups) {
         // value에 넣어줄 배열 생성
@@ -157,21 +158,9 @@ $(document).ready(function () {
 
         return forRenderList;
     };
+    // ------------------------형식(form) 관련 함수-------------------------------
 
     // ------------------------히스토리 관련 함수-------------------------------
-    /* 
-        자리 히스토리
-        @param itemHistoryObj 기록이 저장될 object
-        @param itemHistoryKey 맴버 이름
-        @param itemHistoryGroupValue 배열의 그룹 값
-        @param itemHistoryPlaceValue 그룹에서의 위치 값
-
-        params들을 받아서 해당 위치를 false로 변경해 줌.
-        초기화 했던 Obj에 하나씩 false로 바꾸면서 히스토리를 만든다.
-    */
-    const oneItemHistory = function (itemHistoryObj, itemHistoryKey, itemHistoryGroupValue, itemHistoryPlaceValue) {
-        itemHistoryObj[itemHistoryKey][itemHistoryGroupValue][itemHistoryPlaceValue] = false;
-    }
     /* 
         자리 히스토리
         @param itemHistoryObj 기록이 저장될 object
@@ -186,17 +175,14 @@ $(document).ready(function () {
     const listItemHistory = function (itemHistoryObj, itemHistoryFormList) {
         for (var lp1 = 0; lp1 < itemHistoryFormList.length; lp1++) {
             for (var lp2 = 0; lp2 < itemHistoryFormList[lp1].length; lp2++) {
-
-                oneItemHistory(itemHistoryObj, itemHistoryFormList[lp1][lp2], lp1, lp2);
+                itemHistoryObj[itemHistoryFormList[lp1][lp2]][lp1][lp2] = false;
             }
         }
-
     }
 
     /* 
         @param checkObj 체크해야할 obj
         @param checkList for문 돌리기 위한 list
-        @param groups 그룹 수
         @param checkBoolean 체크할 boolean
     
         모든 히스토리가 checkBoolean으로 되어있는지 체크
@@ -217,6 +203,12 @@ $(document).ready(function () {
         return allFlag;
     };
 
+    /* 
+        @param checkList for문 돌리기 위한 list
+        @param checkBoolean 체크할 boolean
+    
+        모든 히스토리가 checkBoolean으로 되어있는지 체크
+    */
     const innerHistoryCheck = function (checkList, checkBoolean) {
         let innnerFlag = true;
 
@@ -240,6 +232,11 @@ $(document).ready(function () {
         return Math.floor(Math.random() * Math.floor(max));
     }
 
+    /* 
+        @param indexList 대상 list
+        
+        리스트에 남아있는 index 리턴
+    */
     const remainderIndex = function (indexList) {
         let remainList = [];
         var count1 = 0;
@@ -253,6 +250,11 @@ $(document).ready(function () {
         return remainList;
     };
 
+    /* 
+        @param listParam 대상 list
+        
+        리스트가 들어오면 제약조건 없이 랜덤 리스트 리턴
+    */
     const noLimitRandomList = function (listParam) {
         let noLimitRandom = [];
         let noLimitRandomIndex = [];
@@ -278,6 +280,13 @@ $(document).ready(function () {
         return noLimitRandom;
     }
 
+    /* 
+        @param findNowGroupList 대상 list
+        @param findNowGroupMemberName 맴버의 이름
+        @param findNowGroupGroups 그룹 수
+        
+        현재 리스트에서 해당 맴버가 몇 번째 그룹에 있는지 index 리턴
+    */
     const findNowGroup = function (findNowGroupList, findNowGroupMemberName, findNowGroupGroups) {
         let findNowGroupNum = 0;
 
@@ -293,11 +302,14 @@ $(document).ready(function () {
         return findNowGroupNum;
     }
 
-    /* 
-        외부 히스토리 true
-        내부 히스토리 true
-        현재 그룹 아님
 
+    /* 
+        @param outterHistory 외부 히스토리
+        @param innerHistory 내부 히스토리
+        @param nowGroupNum 현재 소속된 그룹
+
+        내외부 히스토리와 현재 소속된 그룹이 아닌 2차 배열 리턴
+        
         3가지 조건 모두 만족하는 리스트
     */
     const inOutOtherGroupRemainder = function (outterHistory, innerHistory, nowGroupNum) {
@@ -321,10 +333,18 @@ $(document).ready(function () {
         return inOutTrue1Array;
     };
 
-    const outOtherGroupRemainder = function (outterHistory, nowGroupNum) {
-        let outTrue1Array = [];
-        let outTrue2Array = [];
+    /* 
+        @param outterHistory 외부 히스토리
+        @param nowGroupNum 현재 소속된 그룹
+        
+        외부 히스토리와 현재 소속된 그룹이 아닌 2차 배열 리턴
 
+        2가지 조건 모두 만족하는 리스트
+    */
+   const outOtherGroupRemainder = function (outterHistory, nowGroupNum) {
+       let outTrue1Array = [];
+        let outTrue2Array = [];
+        
         for (var lp1 = 0; lp1 < outterHistory.length; lp1++) {
             if (nowGroupNum == lp1) {
                 outTrue1Array.push([]);
@@ -338,38 +358,54 @@ $(document).ready(function () {
                 outTrue2Array = [];
             }
         }
-
+        
         return outTrue1Array;
     };
-    const outRemainder = function (outterHistory) {
-        let true1Array = [];
-        let true2Array = [];
 
-        for (var lp1 = 0; lp1 < outterHistory.length; lp1++) {
-            for (var lp2 = 0; lp2 < outterHistory[lp1].length; lp2++) {
-                if (outterHistory[lp1][lp2] == true) {
-                    true2Array.push(lp2);
+    /* 
+        @param outterHistory 외부 히스토리
+        
+        현재 소속된 그룹이 아닌 2차 배열 리턴
+    */
+   const outRemainder = function (outterHistory) {
+       let true1Array = [];
+       let true2Array = [];
+        
+       for (var lp1 = 0; lp1 < outterHistory.length; lp1++) {
+           for (var lp2 = 0; lp2 < outterHistory[lp1].length; lp2++) {
+               if (outterHistory[lp1][lp2] == true) {
+                   true2Array.push(lp2);
                 }
             }
             true1Array.push(true2Array);
             true2Array = [];
         }
-
+        
         return true1Array;
     };
-
-    const trueRemainderGroup = function (trueArray) {
-        let trueGroupArray = [];
-
-        for (var lp1 = 0; lp1 < trueArray.length; lp1++) {
-            if (trueArray[lp1].length !== 0) {
-                trueGroupArray.push(lp1);
+    
+    /* 
+        @param trueArray 2차원 배열
+        
+        현재 true가 남아있는 remainder 2차원 배열에서 각 그룹에 존재하는 수 리턴
+    */
+   const trueRemainderGroup = function (trueArray) {
+       let trueGroupArray = [];
+       
+       for (var lp1 = 0; lp1 < trueArray.length; lp1++) {
+           if (trueArray[lp1].length !== 0) {
+               trueGroupArray.push(lp1);
             }
         }
 
         return trueGroupArray;
     };
-
+    
+    /* 
+        @param checkList 2차원 배열
+        
+        내부 히스토리에 들어갈 수 있는 자리 수 카운트
+    */
     const innerHistoryTrueCount = function (checkList) {
         let innnerTrueCount = 0;
 
@@ -385,7 +421,8 @@ $(document).ready(function () {
     };
 
     /* 
-        @param shuffleListParam list형태 
+        @param historyParam 외부 히스토리 객체
+        @param shuffleListParam 대상 list 
         @param shuffleGroupParam 그룹 수 
 
         조건을 맞춘 랜덤 구현
@@ -437,7 +474,7 @@ $(document).ready(function () {
                         let nowCount;
                         let loopCount = 0;
                         while ((compareCount - 1) != nowCount) {
-                            
+
                             let nowGroup = findNowGroup(nowList, nowMember, shuffleGroupParam);
                             let inOutGroupRemainderFormList = inOutOtherGroupRemainder(historyParam[nowMember], innerHistoryIndex, nowGroup);
                             let groupPickParam = trueRemainderGroup(inOutGroupRemainderFormList);
@@ -445,22 +482,22 @@ $(document).ready(function () {
                                 if (innerHistoryCheck(innerHistoryIndex, false) == false) {
                                     let outGroupRemainderFormList = outOtherGroupRemainder(historyParam[nowMember], nowGroup);
                                     let groupPickParam2 = trueRemainderGroup(outGroupRemainderFormList);
-                                    if (groupPickParam2.length === 0 || loopCount>3) {
+                                    if (groupPickParam2.length === 0 || loopCount > 3) {
                                         if (innerHistoryCheck(innerHistoryIndex, false) == false) {
                                             let outRemainderFormList = outRemainder(historyParam[nowMember]);
                                             let groupPickParam3 = trueRemainderGroup(outRemainderFormList);
                                             let groupPick = groupPickParam3[randomIntMax(groupPickParam3.length)];
-                                            // 여기로 들어왔다고?
+                                            // 버그1?
                                             let placePick = outRemainderFormList[groupPick][randomIntMax(outRemainderFormList[groupPick].length)];
-                                            
+
                                             if (innerShuffleListForm[groupPick][placePick] == true) {
-                                                
+
                                                 innerShuffleListForm[groupPick][placePick] = nowMember;
                                                 innerHistoryIndex[groupPick][placePick] = false;
                                             } else {
                                                 var temp = innerShuffleListForm[groupPick][placePick]
                                                 innerShuffleListForm[groupPick][placePick] = nowMember;
-                                                
+
                                                 nowMember = temp;
                                             }
                                         }
@@ -478,7 +515,7 @@ $(document).ready(function () {
                                         } else {
                                             var temp1 = innerShuffleListForm[randomGroupPick][randomPlacePick]
                                             innerShuffleListForm[randomGroupPick][randomPlacePick] = nowMember;
-                                            
+
                                             nowMember = temp1;
                                         }
                                     }
@@ -516,10 +553,10 @@ $(document).ready(function () {
                         }
                     }
                     listItemHistory(historyParam, innerShuffleListForm);
-                    console.log('historyParam', historyParam) 
-                    console.log('shuffleCount', shuffleCount, '번째') 
+                    console.log('historyParam', historyParam)
+                    console.log('shuffleCount', shuffleCount, '번째')
                     shuffleCount = 1;
-                    console.log('shuffleCount', shuffleCount, '초기화') 
+                    console.log('shuffleCount', shuffleCount, '초기화')
                 }
             }
         }
@@ -531,6 +568,8 @@ $(document).ready(function () {
 
 
     /* 
+        @param renderListFormattingParam 대상 list
+
         그냥 list 형태로 들어옴
         render
     */
@@ -541,9 +580,7 @@ $(document).ready(function () {
     }
 
     /* 
-    초기화를 하고 처음 섞어서(shuffle) 기록(itemHistory) 후
-    
-    renderList
+        초기화를 하고 처음 섞어서(shuffle) 기록(itemHistory) 후 renderList
     */
     $("#setSeat").on("click", function () {
         historyObject = groupObjCreate(originList, 3);
@@ -552,9 +589,7 @@ $(document).ready(function () {
         renderList(nowRenderList);
     });
     /* 
-    섞어서(shuffle) 기록(itemHistory) 후 
-    
-    renderList
+        섞어서(shuffle) 기록(itemHistory) 후 renderList
     */
     $("#randomSeat").on("click", function () {
         var nowRenderList = shuffle(historyObject, nowList, 3);
