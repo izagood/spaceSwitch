@@ -490,6 +490,7 @@ $(document).ready(function () {
                                             let groupPick = groupPickParam3[randomIntMax(groupPickParam3.length)];
                                             // 버그1? outRemainderFormList[groupPick].length 가 될 수없다.
                                             // outRemainderFormList[groupPick]이 undefind가 희박한 확률로 발생한다.
+                                            // 초기화되고 자리섞기를 눌렀는데 처음 if로 안 들어가고 여기로 들어옴.
                                             let placePick = outRemainderFormList[groupPick][randomIntMax(outRemainderFormList[groupPick].length)];
 
                                             if (innerShuffleListForm[groupPick][placePick] == true) {
