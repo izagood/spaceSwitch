@@ -488,7 +488,8 @@ $(document).ready(function () {
                                             let outRemainderFormList = outRemainder(historyParam[nowMember]);
                                             let groupPickParam3 = trueRemainderGroup(outRemainderFormList);
                                             let groupPick = groupPickParam3[randomIntMax(groupPickParam3.length)];
-                                            // 버그1?
+                                            // 버그1? outRemainderFormList[groupPick].length 가 될 수없다.
+                                            // outRemainderFormList[groupPick]이 undefind가 희박한 확률로 발생한다.
                                             let placePick = outRemainderFormList[groupPick][randomIntMax(outRemainderFormList[groupPick].length)];
 
                                             if (innerShuffleListForm[groupPick][placePick] == true) {
