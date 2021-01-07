@@ -34,6 +34,7 @@ $(document).ready(function () {
     let nowList = [];
     let historyObject = {};
     let shuffleCount = 1;
+    let inputGroup = 3;
 
     // ------------------------형식(form) 관련 함수-------------------------------
     /* 
@@ -341,10 +342,10 @@ $(document).ready(function () {
 
         2가지 조건 모두 만족하는 리스트
     */
-   const outOtherGroupRemainder = function (outterHistory, nowGroupNum) {
-       let outTrue1Array = [];
+    const outOtherGroupRemainder = function (outterHistory, nowGroupNum) {
+        let outTrue1Array = [];
         let outTrue2Array = [];
-        
+
         for (var lp1 = 0; lp1 < outterHistory.length; lp1++) {
             if (nowGroupNum == lp1) {
                 outTrue1Array.push([]);
@@ -358,7 +359,7 @@ $(document).ready(function () {
                 outTrue2Array = [];
             }
         }
-        
+
         return outTrue1Array;
     };
 
@@ -367,40 +368,40 @@ $(document).ready(function () {
         
         현재 소속된 그룹이 아닌 2차 배열 리턴
     */
-   const outRemainder = function (outterHistory) {
-       let true1Array = [];
-       let true2Array = [];
-        
-       for (var lp1 = 0; lp1 < outterHistory.length; lp1++) {
-           for (var lp2 = 0; lp2 < outterHistory[lp1].length; lp2++) {
-               if (outterHistory[lp1][lp2] == true) {
-                   true2Array.push(lp2);
+    const outRemainder = function (outterHistory) {
+        let true1Array = [];
+        let true2Array = [];
+
+        for (var lp1 = 0; lp1 < outterHistory.length; lp1++) {
+            for (var lp2 = 0; lp2 < outterHistory[lp1].length; lp2++) {
+                if (outterHistory[lp1][lp2] == true) {
+                    true2Array.push(lp2);
                 }
             }
             true1Array.push(true2Array);
             true2Array = [];
         }
-        
+
         return true1Array;
     };
-    
+
     /* 
         @param trueArray 2차원 배열
         
         현재 true가 남아있는 remainder 2차원 배열에서 각 그룹에 존재하는 수 리턴
     */
-   const trueRemainderGroup = function (trueArray) {
-       let trueGroupArray = [];
-       
-       for (var lp1 = 0; lp1 < trueArray.length; lp1++) {
-           if (trueArray[lp1].length !== 0) {
-               trueGroupArray.push(lp1);
+    const trueRemainderGroup = function (trueArray) {
+        let trueGroupArray = [];
+
+        for (var lp1 = 0; lp1 < trueArray.length; lp1++) {
+            if (trueArray[lp1].length !== 0) {
+                trueGroupArray.push(lp1);
             }
         }
 
         return trueGroupArray;
     };
-    
+
     /* 
         @param checkList 2차원 배열
         
@@ -579,20 +580,25 @@ $(document).ready(function () {
         }
     }
 
+
+
     /* 
-        초기화를 하고 처음 섞어서(shuffle) 기록(itemHistory) 후 renderList
+    초기화를 하고 처음 섞어서(shuffle) 기록(itemHistory) 후 renderList
     */
     $("#setSeat").on("click", function () {
-        historyObject = groupObjCreate(originList, 3);
+        if ($('#inputGroup').val()) {
+            inputGroup = $('#inputGroup').val();
+        }
+        historyObject = groupObjCreate(originList, inputGroup);
         nowList = originList
-        var nowRenderList = shuffle(historyObject, nowList, 3);
+        var nowRenderList = shuffle(historyObject, nowList, inputGroup);
         renderList(nowRenderList);
     });
     /* 
         섞어서(shuffle) 기록(itemHistory) 후 renderList
     */
     $("#randomSeat").on("click", function () {
-        var nowRenderList = shuffle(historyObject, nowList, 3);
+        var nowRenderList = shuffle(historyObject, nowList, inputGroup);
         renderList(nowRenderList);
     });
 });
