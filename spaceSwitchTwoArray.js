@@ -418,7 +418,8 @@ $(document).ready(function () {
             // 모두 false 일때
             if (allHistoryCheck(historyParam, shuffleListParam, false) == true) {
                 //히스토리 초기화
-                historyParam = groupObjCreate(shuffleListParam, shuffleGroupParam);
+                historyObject = groupObjCreate(shuffleListParam, shuffleGroupParam);
+                historyParam = historyObject;
                 // 랜덤 배정 후 히스토리 기록을 위해 formatting
                 innerShuffleList = noLimitRandomList(originList);
                 innerShuffleListForm = changeListToForm(innerShuffleList, shuffleGroupParam);
@@ -446,17 +447,10 @@ $(document).ready(function () {
                                     let groupPickParam2 = trueRemainderGroup(outGroupRemainderFormList);
                                     if (groupPickParam2.length === 0 || loopCount>3) {
                                         if (innerHistoryCheck(innerHistoryIndex, false) == false) {
-                                            // 마지막 부분에서는 랜덤을 진행하지 않는다.
-                                            // 들어갈 수 있는 자리가 거의 없기 때문에 무한 루프가 된다.
-
-                                            // 여기서 inOut으로 되는 애들 리턴해주는 함수 사용해서 해당하는 애들로
-                                            // 넣어준 애가 이미 inner 히스토리에 있는 애면 걔를 뺴서 다시 배정
-                                            // for문 리스트 돌려서 가능한 애 찾아서
-                                            // 지금 inner에 들어가 있는거 빼고 가능한 곳에 넣고
-                                            // ?? 그담에?/
                                             let outRemainderFormList = outRemainder(historyParam[nowMember]);
                                             let groupPickParam3 = trueRemainderGroup(outRemainderFormList);
                                             let groupPick = groupPickParam3[randomIntMax(groupPickParam3.length)];
+                                            // 여기로 들어왔다고?
                                             let placePick = outRemainderFormList[groupPick][randomIntMax(outRemainderFormList[groupPick].length)];
                                             
                                             if (innerShuffleListForm[groupPick][placePick] == true) {
@@ -506,6 +500,7 @@ $(document).ready(function () {
                     shuffleCount++;
                     console.log('shuffleCount', shuffleCount, '번째')
                 } else {
+                    shuffleCount++;
                     // 3단계
                     for (var lp2 = 0; lp2 < shuffleListParam.length; lp2++) {
                         let nowMember = shuffleListParam[lp2];
@@ -522,7 +517,9 @@ $(document).ready(function () {
                     }
                     listItemHistory(historyParam, innerShuffleListForm);
                     console.log('historyParam', historyParam) 
+                    console.log('shuffleCount', shuffleCount, '번째') 
                     shuffleCount = 1;
+                    console.log('shuffleCount', shuffleCount, '초기화') 
                 }
             }
         }
