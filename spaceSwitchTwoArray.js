@@ -445,7 +445,7 @@ $(document).ready(function () {
             // 모두 false 일때
             if (allHistoryCheck(historyParam, shuffleListParam, false) == true) {
                 //히스토리 초기화
-                historyObject = groupObjCreate(shuffleListParam, shuffleGroupParam);
+                historyParam = groupObjCreate(shuffleListParam, shuffleGroupParam);
                 // 랜덤 배정 후 히스토리 기록을 위해 formatting
                 innerShuffleList = noLimitRandomList(originList);
                 innerShuffleListForm = changeListToForm(innerShuffleList, shuffleGroupParam);
