@@ -48,3 +48,42 @@ while(!innerHistoryCheck(innerHistory, false)){
 결과적으로는 innerHistory에 true로 되어있는 곳에 할당이 될 때까지 while을 돌꺼임
 
 아마 true가 1,2 개 정도? 일듯함
+
+--------------------
+3단계 알고리즘 수정
+
+전제 - 앞 순서에서 자리를 고르면 내부 히스토리가 쌓이고
+앞 순서의 내부 히스토리가 쌓인 상태에서 이전 그룹이 아닌 동시에
+외부 히스토리와 내부 히스토리를 비교하여 할당 가능한 곳에 넣어준다.
+
+여기의 알고리즘 순서   
+1. 일단 이전 그룹이외의 그룹에 들어간다.
+2. 내부 & 외부 히스토리에서 동시에 가능한 곳으로 간다.
+3. 마지막 순서에는 들어갈 곳이 1곳 밖에 남지 않아서 자동으로 들어간다.
+
+
+count1 이 12번째에는 외부 히스토리를 보면 들어갈 수 있는 곳이 다들 1곳 밖에없음
+그래서 횟수를 카운트 해줌.
+일반적으로 사용할 수 있으려면 맴버의 수 만큼 카운트하게 해야함.
+
+
+-------
+알고리즘 개선
+- 현재 에러가 발생하는 이유
+현재 그룹을 배제했기 때문
+
+1. inOutOtherGroup 함수로 돌린다.
+2. inOutOtherGroup == [[],[],[]] 인데 innerHistoryCheck(innerHistory, false) != false가 나와
+false가 나온다는 이유는 모두 false가 아니라는 소리임
+3. A가 들어갈 수 있는 자리에 들어가고(outGroup) 그 자리에 배정되었던
+B를 inOutGroup을 먼저 실행해보고 들어갈 수 없으면
+outGroup으로 배정한다.
+while(!innerHistoryCheck(innerHistory, false)){
+    C를 inOutGroup을 먼저 실행해보고 들어갈 수 없으면
+    outGroup으로 배정한다.
+}
+
+결과적으로는 innerHistory에 true로 되어있는 곳에 할당이 될 때까지 while을 돌꺼임
+
+아마 true가 1,2 개 정도? 일듯함
+-------
